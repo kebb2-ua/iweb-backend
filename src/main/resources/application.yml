@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: "Paquetería"
+  profiles:
+    active: "dev"
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/paqueteria"
+    username: "paqueteria"
+    password: "paqueteria"
+    hikari:
+      pool-name: PaqueteriaPool
+      maximum-pool-size: 10
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
