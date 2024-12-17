@@ -1,12 +1,9 @@
 spring:
-  application:
-    name: "Paquetería"
   profiles:
     active: "dev"
   jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
   datasource:
     url: "jdbc:postgresql://localhost:5432/paqueteria"
     username: "paqueteria"
@@ -17,3 +14,28 @@ spring:
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000
+  mail:
+    host: "mail.kikisito.com"
+    port: 587
+    username: "ua-pracs@kikisito.com"
+    password: "b$ATbJS$o3bajmGs5Ns*tmbmyhRRYRD9U7NAX1v^q@tI&QPejtz3Gc3RaAs9g312&W0LR#jPrHev%Gy5K@Qgf97XhsV#@a7YJEffqV198&$&@d&q^AcOey&Zz9DAhTa2"
+    properties:
+      mail:
+        smtp:
+          from: "ua-pracs@kikisito.com"
+          auth: 'true'
+          starttls:
+            enable: 'true'
+
+application:
+  name: "Paquetería"
+  host: http://localhost:8080
+  security:
+    jwt:
+      secret-key: "IZfpeGlFl5xpPTiFe4BIrfePRlsN6eciiSqaFD3uP3AlABxb6KfxJ2ibRj7gCkSBG8iBevXi2GfLtYhveqiPTQ=="
+      access-token:
+        expiration: 86400000 # CAMBIAR
+      refresh-token:
+        expiration: 2592000000 # CAMBIAR
+      password-reset-token:
+        expiration: 3600000 # 1 hora
