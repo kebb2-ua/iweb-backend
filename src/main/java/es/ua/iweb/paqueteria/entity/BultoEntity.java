@@ -1,9 +1,7 @@
 package es.ua.iweb.paqueteria.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import es.ua.iweb.paqueteria.StringListConverter;
-import es.ua.iweb.paqueteria.type.AccountStatusType;
-import es.ua.iweb.paqueteria.type.RoleType;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -36,18 +34,24 @@ public class BultoEntity {
     @Column
     private String descripcion;
 
-    @Column
+    @Column(nullable = false)
     private float peso;
 
-    @Column
+    @Column(nullable = false)
     private float altura;
 
-    @Column
+    @Column(nullable = false)
     private float ancho;
 
-    @Column
+    @Column(nullable = false)
     private float profundidad;
 
-    @Column
+    @Column(nullable = false)
     private boolean peligroso;
+
+    // Relación con PedidoEntity
+    @ManyToOne
+    @JoinColumn(name = "pedido_id", nullable = false)
+    @JsonBackReference
+    private PedidoEntity pedido;
 }

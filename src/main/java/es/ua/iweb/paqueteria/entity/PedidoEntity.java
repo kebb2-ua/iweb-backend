@@ -1,0 +1,79 @@
+package es.ua.iweb.paqueteria.entity;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import es.ua.iweb.paqueteria.type.EstadoType;
+import es.ua.iweb.paqueteria.StringListConverter;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
+@Entity
+@Builder
+@Table(name = "pedidos")
+public class PedidoEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Integer id;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private UserEntity repartidor;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private UserEntity remitente;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "lineaDireccion1", column = @Column(name = "origen_linea_direccion1")),
+            @AttributeOverride(name = "lineaDireccion2", column = @Column(name = "origen_linea_direccion2")),
+            @AttributeOverride(name = "codigoPostal", column = @Column(name = "origen_codigo_postal")),
+            @AttributeOverride(name = "pais", column = @Column(name = "origen_pais")),
+            @AttributeOverride(name = "provincia", column = @Column(name = "origen_provincia")),
+            @AttributeOverride(name = "municipio", column = @Column(name = "origen_municipio")),
+            @AttributeOverride(name = "localidad", column = @Column(name = "origen_localidad"))
+    })
+    private DireccionCopy origen;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "lineaDireccion1", column = @Column(name = "destino_linea_direccion1")),
+            @AttributeOverride(name = "lineaDireccion2", column = @Column(name = "destino_linea_direccion2")),
+            @AttributeOverride(name = "codigoPostal", column = @Column(name = "destino_codigo_postal")),
+            @AttributeOverride(name = "pais", column = @Column(name = "destino_pais")),
+            @AttributeOverride(name = "provincia", column = @Column(name = "destino_provincia")),
+            @AttributeOverride(name = "municipio", column = @Column(name = "destino_municipio")),
+            @AttributeOverride(name = "localidad", column = @Column(name = "destino_localidad"))
+    })
+    private DireccionCopy destino;
+
+    @Convert(converter = StringListConverter.class)
+    @Enumerated(EnumType.STRING)
+    private EstadoType estado;
+
+    @Column
+    private Date estado_ultima_actualizacion;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private PedidoEntity pedido_devolucion;
+
+    @Column(nullable = false)
+    private float precio;
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<BultoEntity> bultos = new ArrayList<>();
+
+    @Column
+    private String observaciones;
+}
