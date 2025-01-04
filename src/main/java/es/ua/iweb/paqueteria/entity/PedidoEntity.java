@@ -1,5 +1,6 @@
 package es.ua.iweb.paqueteria.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import es.ua.iweb.paqueteria.type.EstadoType;
 import es.ua.iweb.paqueteria.StringListConverter;
@@ -76,4 +77,10 @@ public class PedidoEntity {
 
     @Column
     private String observaciones;
+
+    // Relación con RutaEntity
+    @ManyToOne
+    @JoinColumn(name = "ruta_id", nullable = false)
+    @JsonBackReference
+    private RutaEntity ruta;
 }
