@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface PedidoRepository extends JpaRepository<BultoEntity, Integer>{
+public interface PedidoRepository extends JpaRepository<PedidoEntity, Integer>{
 
     List<PedidoEntity> findByRepartidorId(Integer repartidorId);
 

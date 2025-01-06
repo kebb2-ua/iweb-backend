@@ -1,7 +1,6 @@
 package es.ua.iweb.paqueteria.service;
 
 import es.ua.iweb.paqueteria.entity.PedidoEntity;
-import es.ua.iweb.paqueteria.repository.BultoRepository;
 import es.ua.iweb.paqueteria.repository.PedidoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -15,6 +14,10 @@ import java.util.List;
 public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
+
+    public PedidoEntity addPedido(PedidoEntity pedido) { return this.pedidoRepository.save(pedido); }
+
+    public List<PedidoEntity> getAllPedidos() { return this.pedidoRepository.findAll(); }
 
     public List<PedidoEntity> getPedidosByRepartidor(Integer repartidorId) {
         return pedidoRepository.findByRepartidorId(repartidorId);
