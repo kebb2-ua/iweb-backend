@@ -44,7 +44,7 @@ public class PedidoEntity {
             @AttributeOverride(name = "municipio", column = @Column(name = "origen_municipio")),
             @AttributeOverride(name = "localidad", column = @Column(name = "origen_localidad"))
     })
-    private DireccionCopy origen;
+    private DireccionValue origen;
 
     @Embedded
     @AttributeOverrides({
@@ -56,7 +56,7 @@ public class PedidoEntity {
             @AttributeOverride(name = "municipio", column = @Column(name = "destino_municipio")),
             @AttributeOverride(name = "localidad", column = @Column(name = "destino_localidad"))
     })
-    private DireccionCopy destino;
+    private DireccionValue destino;
 
     @Convert(converter = StringListConverter.class)
     @Enumerated(EnumType.STRING)
