@@ -11,7 +11,9 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface BultoRepository extends JpaRepository<BultoEntity, Integer>{
-    List<BultoEntity> findByPedidoId(Integer pedidoId);
+public interface PedidoRepository extends JpaRepository<BultoEntity, Integer>{
 
+    List<PedidoEntity> findByRepartidorId(Integer repartidorId);
+
+    List<PedidoEntity> findByFechaRango(Date start, Date end);
 }
