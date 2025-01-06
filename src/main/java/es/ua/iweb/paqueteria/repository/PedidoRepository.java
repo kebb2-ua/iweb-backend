@@ -16,4 +16,6 @@ public interface PedidoRepository extends JpaRepository<PedidoEntity, Integer>{
     List<PedidoEntity> findByRepartidorId(Integer repartidorId);
 
     List<PedidoEntity> findByFechaRango(Date start, Date end);
+
+    List<PedidoEntity> findByRutaId(Integer rutaId);
 }

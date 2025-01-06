@@ -27,5 +27,6 @@ public class PedidoService {
         return pedidoRepository.findByFechaRango(fechaInicio, fechaFin);
     }
 
+    public List<PedidoEntity> getPedidosByRutaId(Integer rutaId){ return pedidoRepository.findByRutaId(rutaId); }
 
 }
