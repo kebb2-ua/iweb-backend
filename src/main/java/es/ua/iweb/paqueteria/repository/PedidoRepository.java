@@ -1,6 +1,5 @@
 package es.ua.iweb.paqueteria.repository;
 
-import es.ua.iweb.paqueteria.entity.BultoEntity;
 import es.ua.iweb.paqueteria.entity.PedidoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
