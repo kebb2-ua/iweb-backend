@@ -21,6 +21,4 @@ public class RutaService {
     public List<RutaEntity> getRutasByReoartidor(Integer repartidorId){ return rutaRepository.findByRepartidorId(repartidorId); }
 
     public List<RutaEntity> getRutasByFecha(Date fecha){ return rutaRepository.findByFecha(fecha); }
-
-    public List<RutaEntity> getRutasByRangoFechas(Date fechaInicio, Date fechaFinal){ return  rutaRepository.findByFechaRango(fechaInicio, fechaFinal); }
 }

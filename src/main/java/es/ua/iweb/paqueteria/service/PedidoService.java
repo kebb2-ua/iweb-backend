@@ -23,10 +23,6 @@ public class PedidoService {
         return pedidoRepository.findByRepartidorId(repartidorId);
     }
 
-    public List<PedidoEntity> getPedidosByFechaRango(Date fechaInicio, Date fechaFin) {
-        return pedidoRepository.findByFechaRango(fechaInicio, fechaFin);
-    }
-
     public List<PedidoEntity> getPedidosByRutaId(Integer rutaId){ return pedidoRepository.findByRutaId(rutaId); }
 
 }

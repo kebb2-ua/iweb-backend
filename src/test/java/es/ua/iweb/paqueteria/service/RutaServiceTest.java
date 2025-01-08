@@ -27,7 +27,7 @@ class RutaServiceTest {
 
     @Test
     void testCrearRuta() {
-        // Arrange
+        // Preparar
         RutaEntity newRuta = RutaEntity.builder()
                 .id(1)
                 .fecha(new Date())
@@ -35,7 +35,7 @@ class RutaServiceTest {
 
         when(rutaRepository.save(newRuta)).thenReturn(newRuta);
 
-        // Act
+        // Probar
         RutaEntity result = rutaService.addRuta(newRuta);
 
         // Assert
@@ -46,7 +46,7 @@ class RutaServiceTest {
 
     @Test
     void testGetListadoRutas() {
-        // Arrange
+        // Preparar
         List<RutaEntity> rutas = Arrays.asList(
                 RutaEntity.builder().id(1).build(),
                 RutaEntity.builder().id(2).build()
@@ -54,10 +54,10 @@ class RutaServiceTest {
 
         when(rutaRepository.findAll()).thenReturn(rutas);
 
-        // Act
+        // Probar
         List<RutaEntity> result = rutaService.getAllRutas();
 
-        // Assert
+        // Comprobar
         assertNotNull(result);
         assertEquals(2, result.size());
         verify(rutaRepository, times(1)).findAll();
@@ -65,7 +65,7 @@ class RutaServiceTest {
 
     @Test
     void testListadoRutasPorRepartidor() {
-        // Arrange
+        // Preparar
         Integer repartidorId = 10;
         List<RutaEntity> rutas = Arrays.asList(
                 RutaEntity.builder().id(1).build(),
@@ -74,10 +74,10 @@ class RutaServiceTest {
 
         when(rutaRepository.findByRepartidorId(repartidorId)).thenReturn(rutas);
 
-        // Act
+        // Probar
         List<RutaEntity> result = rutaService.getRutasByReoartidor(repartidorId);
 
-        // Assert
+        // Comprobar
         assertNotNull(result);
         assertEquals(2, result.size());
         verify(rutaRepository, times(1)).findByRepartidorId(repartidorId);
@@ -85,7 +85,7 @@ class RutaServiceTest {
 
     @Test
     void testListadoRutasPorFecha() {
-        // Arrange
+        // Preparar
         Date fecha = new Date();
         List<RutaEntity> rutas = Arrays.asList(
                 RutaEntity.builder().id(1).build(),
@@ -94,10 +94,10 @@ class RutaServiceTest {
 
         when(rutaRepository.findByFecha(fecha)).thenReturn(rutas);
 
-        // Act
+        // Probar
         List<RutaEntity> result = rutaService.getRutasByFecha(fecha);
 
-        // Assert
+        // Comprobar
         assertNotNull(result);
         assertEquals(2, result.size());
         verify(rutaRepository, times(1)).findByFecha(fecha);
@@ -105,57 +105,18 @@ class RutaServiceTest {
 
     @Test
     void testListadoRutasVacioPorFecha() {
-        // Arrange
+        // Preparar
         Date fecha = new Date();
 
         when(rutaRepository.findByFecha(fecha)).thenReturn(List.of());
 
-        // Act
+        // Probar
         List<RutaEntity> result = rutaService.getRutasByFecha(fecha);
 
-        // Assert
+        // Comprobar
         assertNotNull(result);
         assertTrue(result.isEmpty());
         verify(rutaRepository, times(1)).findByFecha(fecha);
-    }
-
-    @Test
-    void testListadoRutasPorRangoFechas() {
-        // Arrange
-        Date fechaInicio = new Date(1672531200000L); // 1 Ene 2023
-        Date fechaFinal = new Date(1675209600000L); // 1 Feb 2023
-
-        List<RutaEntity> rutas = Arrays.asList(
-                RutaEntity.builder().id(1).build(),
-                RutaEntity.builder().id(2).build()
-        );
-
-        when(rutaRepository.findByFechaRango(fechaInicio, fechaFinal)).thenReturn(rutas);
-
-        // Act
-        List<RutaEntity> result = rutaService.getRutasByRangoFechas(fechaInicio, fechaFinal);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        verify(rutaRepository, times(1)).findByFechaRango(fechaInicio, fechaFinal);
-    }
-
-    @Test
-    void testListadoRutasVacioPorRangoFechas() {
-        // Arrange
-        Date fechaInicio = new Date(1672531200000L); // 1 Ene 2023
-        Date fechaFinal = new Date(1675209600000L); // 1 Feb 2023
-
-        when(rutaRepository.findByFechaRango(fechaInicio, fechaFinal)).thenReturn(List.of());
-
-        // Act
-        List<RutaEntity> result = rutaService.getRutasByRangoFechas(fechaInicio, fechaFinal);
-
-        // Assert
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
-        verify(rutaRepository, times(1)).findByFechaRango(fechaInicio, fechaFinal);
     }
 }
 
