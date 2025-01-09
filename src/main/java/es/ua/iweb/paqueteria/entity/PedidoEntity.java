@@ -2,6 +2,7 @@ package es.ua.iweb.paqueteria.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import es.ua.iweb.paqueteria.dto.PedidoDTO;
 import es.ua.iweb.paqueteria.type.EstadoType;
 import es.ua.iweb.paqueteria.StringListConverter;
 import jakarta.persistence.*;
@@ -83,4 +84,21 @@ public class PedidoEntity {
     @JoinColumn(name = "ruta_id", nullable = false)
     @JsonBackReference
     private RutaEntity ruta;
+
+    public PedidoDTO toDTO() {
+        return PedidoDTO.builder()
+                .id(this.id)
+                .repartidor(this.repartidor.toDTO())
+                .remitente(this.remitente.toDTO())
+                .origen(this.origen)
+                .destino(this.destino)
+                .estado(this.estado)
+                .estado_ultima_actualizacion(this.estado_ultima_actualizacion)
+                .pedido_devolucion(this.pedido_devolucion.toDTO())
+                .precio(this.precio)
+                .bultos(this.bultos.stream().map(BultoEntity::toDTO).toList())
+                .observaciones(this.observaciones)
+                .ruta(this.ruta)
+                .build();
+    }
 }
