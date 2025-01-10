@@ -1,8 +1,6 @@
 package es.ua.iweb.paqueteria.controllers;
 
-import es.ua.iweb.paqueteria.dto.EstadoPedidoDTO;
-import es.ua.iweb.paqueteria.dto.PedidoRequest;
-import es.ua.iweb.paqueteria.dto.PedidoResponse;
+import es.ua.iweb.paqueteria.dto.*;
 import es.ua.iweb.paqueteria.service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -51,5 +49,13 @@ public class PedidoController {
     @GetMapping("/estado/{id}")
     public ResponseEntity<EstadoPedidoDTO> getEstadoPedido(@PathVariable Integer id) {
         return ResponseEntity.ok(pedidoService.getEstadoPedido(id));
+    }
+
+    @Operation(summary = "Calcula el precio de un envío")
+    @ApiResponse(responseCode = "200", description = "Devuelve la tarifa del envío")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PostMapping("/tarifas")
+    public ResponseEntity<TarifaResponse> getTarifa(@RequestBody @Valid TarifaRequest tarifaRequest) {
+        return ResponseEntity.ok(TarifaResponse.builder().coste_estimado(9.99f).build());
     }
 }

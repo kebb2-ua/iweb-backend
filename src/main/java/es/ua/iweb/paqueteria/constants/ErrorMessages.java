@@ -20,4 +20,5 @@ public final class ErrorMessages {
     public static final String PEDIDO_NOT_FOUND = "Pedido not found";
     public static final String INTERNAL_SERVER_ERROR = "Internal server error";
     public static final String RESOURCE_NOT_FOUND = "Resource not found";
+    public static final String METHOD_NOT_ALLOWED = "Method not allowed";
 }

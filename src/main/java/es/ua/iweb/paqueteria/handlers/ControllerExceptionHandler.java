@@ -8,6 +8,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,6 +26,7 @@ public class ControllerExceptionHandler {
     private final static String USER_NOT_FOUND = "USER_NOT_FOUND";
     private final static String RESOURCE_NOT_FOUND = "RESOURCE_NOT_FOUND";
     private final static String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
+    private final static String METHOD_NOT_ALLOWED = "METHOD_NOT_ALLOWED";
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -84,6 +86,12 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public List<ErrorResponse> handleNoResourceFoundException(final NoResourceFoundException ex) {
         return List.of(ErrorResponse.of(ErrorMessages.RESOURCE_NOT_FOUND, RESOURCE_NOT_FOUND));
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public List<ErrorResponse> handleHttpRequestMethodNotSupportedException(final HttpRequestMethodNotSupportedException ex) {
+        return List.of(ErrorResponse.of(ErrorMessages.METHOD_NOT_ALLOWED, METHOD_NOT_ALLOWED));
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
