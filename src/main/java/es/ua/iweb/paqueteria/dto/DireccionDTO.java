@@ -1,5 +1,6 @@
 package es.ua.iweb.paqueteria.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import es.ua.iweb.paqueteria.constants.ErrorMessages;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Data;
 
 @Data
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DireccionDTO {
     private Integer id;
 

@@ -1,8 +1,7 @@
 package es.ua.iweb.paqueteria.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import es.ua.iweb.paqueteria.type.EstadoType;
-import es.ua.iweb.paqueteria.StringListConverter;
+import es.ua.iweb.paqueteria.dto.RutaDTO;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -34,5 +33,15 @@ public class RutaEntity {
 
     @OneToMany(mappedBy = "ruta", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @Builder.Default
     private List<PedidoEntity> pedidos = new ArrayList<>();
+
+    public RutaDTO toDTO() {
+        return RutaDTO.builder()
+                .id(this.id)
+                .repartidor(this.repartidor.toDTO())
+                .fecha(this.fecha)
+                .pedidos(this.pedidos.stream().map(PedidoEntity::toDTO).toList())
+                .build();
+    }
 }

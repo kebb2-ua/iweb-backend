@@ -65,6 +65,7 @@ public class UserEntity implements UserDetails {
 
     @Column(columnDefinition = "VARCHAR(20)")
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private AccountStatusType accountStatusType = AccountStatusType.NOT_VERIFIED;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
@@ -118,8 +119,8 @@ public class UserEntity implements UserDetails {
                 .apellidos(this.apellidos)
                 .razonSocial(this.razonSocial)
                 .email(this.email)
-                .direccion(this.direccion.toDTO())
-                .zona(this.zona.toDTO())
+                .direccion(this.direccion != null ? this.direccion.toDTO() : null)
+                .zona(this.zona != null ? this.zona.toDTO() : null)
                 .rolesList(this.rolesList)
                 .accountStatusType(this.accountStatusType)
                 .build();

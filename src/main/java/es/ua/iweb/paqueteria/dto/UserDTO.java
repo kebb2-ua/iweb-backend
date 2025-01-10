@@ -1,5 +1,6 @@
 package es.ua.iweb.paqueteria.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import es.ua.iweb.paqueteria.entity.DireccionValue;
 import es.ua.iweb.paqueteria.type.AccountStatusType;
 import es.ua.iweb.paqueteria.type.RoleType;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Data
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
     private Integer id;
     private String nif;

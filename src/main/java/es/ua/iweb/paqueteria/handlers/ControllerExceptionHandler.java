@@ -63,6 +63,12 @@ public class ControllerExceptionHandler {
         return ex.toList();
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MalformedObjectException.class)
+    public List<ErrorResponse> handleMalformedJsonException(final MalformedObjectException ex) {
+        return ex.toList();
+    }
+
     private static String getMessage(ObjectError error) {
         return String.format(
                 error.getDefaultMessage() == null ? ErrorMessages.FIELD_IS_NOT_VALID : error.getDefaultMessage(), ((FieldError) error).getField()

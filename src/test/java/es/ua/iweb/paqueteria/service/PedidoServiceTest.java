@@ -1,4 +1,5 @@
 package es.ua.iweb.paqueteria.service;
+import es.ua.iweb.paqueteria.dto.PedidoDTO;
 import es.ua.iweb.paqueteria.entity.PedidoEntity;
 import es.ua.iweb.paqueteria.repository.PedidoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +38,7 @@ class PedidoServiceTest {
         when(pedidoRepository.save(newPedido)).thenReturn(newPedido);
 
         // Ejecutar
-        PedidoEntity result = pedidoService.addPedido(newPedido);
+        PedidoDTO result = pedidoService.addPedido(null, newPedido.toDTO());
 
         // Comprobar
         assertNotNull(result);
@@ -57,7 +58,7 @@ class PedidoServiceTest {
         when(pedidoRepository.findAll()).thenReturn(pedidos);
 
         // Ejecutar
-        List<PedidoEntity> result = pedidoService.getAllPedidos();
+        List<PedidoDTO> result = pedidoService.getAllPedidos();
 
         // Comprobar
         assertNotNull(result);
