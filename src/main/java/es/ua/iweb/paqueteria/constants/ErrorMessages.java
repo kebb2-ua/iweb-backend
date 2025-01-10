@@ -17,4 +17,5 @@ public final class ErrorMessages {
     public static final String TOKEN_EXPIRED = "This token has expired before being used";
     public static final String TOKEN_ALREADY_USED = "This token has already been used";
     public static final String INVALID_NAME = "Debes especificar un nombre y apellidos o una razón social";
+    public static final String PEDIDO_NOT_FOUND = "Pedido not found";
 }

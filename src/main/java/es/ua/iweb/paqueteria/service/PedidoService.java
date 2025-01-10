@@ -1,5 +1,6 @@
 package es.ua.iweb.paqueteria.service;
 
+import es.ua.iweb.paqueteria.dto.EstadoPedidoDTO;
 import es.ua.iweb.paqueteria.dto.PedidoDTO;
 import es.ua.iweb.paqueteria.entity.BultoEntity;
 import es.ua.iweb.paqueteria.entity.DireccionValue;
@@ -77,4 +78,11 @@ public class PedidoService {
 
     public List<PedidoEntity> getPedidosByRutaId(Integer rutaId){ return pedidoRepository.findByRutaId(rutaId); }
 
+    public EstadoPedidoDTO getEstadoPedido(Integer id) {
+        PedidoEntity pedido = pedidoRepository.findById(id).orElseThrow(DataNotFoundException::pedidoNotFound);
+        return EstadoPedidoDTO.builder()
+                .estado(pedido.getEstado())
+                .estado_ultima_actualizacion(pedido.getEstado_ultima_actualizacion())
+                .build();
+    }
 }
