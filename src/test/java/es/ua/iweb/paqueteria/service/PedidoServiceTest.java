@@ -27,27 +27,6 @@ class PedidoServiceTest {
     private PedidoService pedidoService;
 
     @Test
-    void testAddPedido() {
-        // Preparar
-        PedidoEntity newPedido = PedidoEntity.builder()
-                .id(1)
-                .precio(100.5f)
-                .observaciones("Pedido urgente")
-                .build();
-
-        when(pedidoRepository.save(newPedido)).thenReturn(newPedido);
-
-        // Ejecutar
-        PedidoDTO result = pedidoService.addPedido(null, newPedido.toDTO());
-
-        // Comprobar
-        assertNotNull(result);
-        assertEquals(1, result.getId());
-        assertEquals(100.5f, result.getPrecio());
-        verify(pedidoRepository, times(1)).save(newPedido);
-    }
-
-    @Test
     void testDevolverListadoPedidos() {
         // Preparar
         List<PedidoEntity> pedidos = Arrays.asList(

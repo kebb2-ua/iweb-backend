@@ -1,3 +1,8 @@
+POSTGRES_HOST: localhost
+POSTGRES_DB: paqueteria
+POSTGRES_USER: paqueteria
+POSTGRES_PASSWORD: paqueteria
+
 spring:
   profiles:
     active: "dev"
@@ -5,9 +10,9 @@ spring:
     hibernate:
       ddl-auto: update
   datasource:
-    url: "jdbc:postgresql://localhost:5432/paqueteria"
-    username: "paqueteria"
-    password: "paqueteria"
+    url: "jdbc:postgresql://${POSTGRES_HOST}:5432/${POSTGRES_DB}"
+    username: "${POSTGRES_USER}"
+    password: "${POSTGRES_PASSWORD}"
     hikari:
       pool-name: PaqueteriaPool
       maximum-pool-size: 10
