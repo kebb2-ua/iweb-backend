@@ -46,6 +46,10 @@ public class SessionEntity extends DatedEntity {
     @Builder.Default
     public TokenType tokenType = TokenType.BEARER;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Builder.Default
+    public Boolean isApiKey = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     public UserEntity user;
