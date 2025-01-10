@@ -32,6 +32,9 @@ spring:
           starttls:
             enable: 'true'
 
+springdoc:
+  default-produces-media-type: application/json
+
 application:
   name: "Paquetería"
   host: http://localhost:8080

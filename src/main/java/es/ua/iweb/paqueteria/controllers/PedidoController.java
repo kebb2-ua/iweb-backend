@@ -3,6 +3,9 @@ package es.ua.iweb.paqueteria.controllers;
 import es.ua.iweb.paqueteria.dto.PedidoDTO;
 import es.ua.iweb.paqueteria.entity.UserEntity;
 import es.ua.iweb.paqueteria.service.PedidoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,9 @@ public class PedidoController {
     @Autowired
     private final PedidoService pedidoService;
 
+    @Operation(summary = "Obtiene todos los pedidos")
+    @ApiResponse(responseCode = "200", description = "Devuelve una lista con todos los pedidos")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping({"", "/", "/all"})
     public ResponseEntity<List<PedidoDTO>> getAllPedidos() {
         List<PedidoDTO> pedidos = pedidoService.getAllPedidos();
@@ -29,6 +35,9 @@ public class PedidoController {
         return ResponseEntity.ok(pedidos);
     }
 
+    @Operation(summary = "Añade un pedido")
+    @ApiResponse(responseCode = "201", description = "Devuelve el pedido añadido")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping({"", "/"})
     public ResponseEntity<PedidoDTO> addPedido(@RequestBody @Valid PedidoDTO pedido) {
         String remitente = SecurityContextHolder.getContext().getAuthentication().getName();
