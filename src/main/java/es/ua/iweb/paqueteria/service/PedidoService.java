@@ -1,7 +1,8 @@
 package es.ua.iweb.paqueteria.service;
 
 import es.ua.iweb.paqueteria.dto.EstadoPedidoDTO;
-import es.ua.iweb.paqueteria.dto.PedidoDTO;
+import es.ua.iweb.paqueteria.dto.PedidoRequest;
+import es.ua.iweb.paqueteria.dto.PedidoResponse;
 import es.ua.iweb.paqueteria.entity.BultoEntity;
 import es.ua.iweb.paqueteria.entity.DireccionValue;
 import es.ua.iweb.paqueteria.entity.PedidoEntity;
@@ -14,7 +15,6 @@ import es.ua.iweb.paqueteria.type.EstadoType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -34,7 +34,7 @@ public class PedidoService {
     private final UserService userService;
 
     @Transactional
-    public PedidoDTO addPedido(String email, PedidoDTO pedido) {
+    public PedidoResponse addPedido(String email, PedidoRequest pedido) {
         try {
             UserEntity remitente = userService.getUserByEmail(email);
 
@@ -62,13 +62,17 @@ public class PedidoService {
             bultos = bultoRepository.saveAll(bultos);
             pedidoEntity.setBultos(bultos);
 
-            return pedidoRepository.save(pedidoEntity).toDTO();
+            PedidoEntity pedidoFinal = pedidoRepository.save(pedidoEntity);
+            return PedidoResponse.builder()
+                    .id_envio(pedidoFinal.getId())
+                    .fecha_creacion(pedidoFinal.getEstado_ultima_actualizacion())
+                    .build();
         } catch (NullPointerException e) {
             throw MalformedObjectException.invalidObject();
         }
     }
 
-    public List<PedidoDTO> getAllPedidos() {
+    public List<PedidoRequest> getAllPedidos() {
         return this.pedidoRepository.findAll().stream().map(PedidoEntity::toDTO).toList();
     }
 

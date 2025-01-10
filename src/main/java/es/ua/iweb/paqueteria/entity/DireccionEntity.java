@@ -18,6 +18,11 @@ public class DireccionEntity {
     private Integer id;
 
     @Column(nullable = false)
+    private String nombre;
+
+    private String nif;
+
+    @Column(nullable = false)
     private String lineaDireccion1;
 
     @Column
@@ -43,6 +48,8 @@ public class DireccionEntity {
 
     public DireccionValue toEmbeddable() {
         return DireccionValue.builder()
+                .nombre(nombre)
+                .nif(nif)
                 .lineaDireccion1(lineaDireccion1)
                 .lineaDireccion2(lineaDireccion2)
                 .codigoPostal(codigoPostal)
@@ -55,6 +62,8 @@ public class DireccionEntity {
 
     public DireccionDTO toDTO() {
         return DireccionDTO.builder()
+                .nombre(nombre)
+                .nif(nif)
                 .lineaDireccion1(lineaDireccion1)
                 .lineaDireccion2(lineaDireccion2)
                 .codigoPostal(codigoPostal)

@@ -2,7 +2,7 @@ package es.ua.iweb.paqueteria.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import es.ua.iweb.paqueteria.dto.PedidoDTO;
+import es.ua.iweb.paqueteria.dto.PedidoRequest;
 import es.ua.iweb.paqueteria.type.EstadoType;
 import es.ua.iweb.paqueteria.StringListConverter;
 import jakarta.persistence.*;
@@ -37,6 +37,8 @@ public class PedidoEntity {
 
     @Embedded
     @AttributeOverrides({
+            @AttributeOverride(name = "nombre", column = @Column(name = "origen_nombre")),
+            @AttributeOverride(name = "nif", column = @Column(name = "origen_nif")),
             @AttributeOverride(name = "lineaDireccion1", column = @Column(name = "origen_linea_direccion1")),
             @AttributeOverride(name = "lineaDireccion2", column = @Column(name = "origen_linea_direccion2")),
             @AttributeOverride(name = "codigoPostal", column = @Column(name = "origen_codigo_postal")),
@@ -49,6 +51,8 @@ public class PedidoEntity {
 
     @Embedded
     @AttributeOverrides({
+            @AttributeOverride(name = "nombre", column = @Column(name = "destino_nombre")),
+            @AttributeOverride(name = "nif", column = @Column(name = "destino_nif")),
             @AttributeOverride(name = "lineaDireccion1", column = @Column(name = "destino_linea_direccion1")),
             @AttributeOverride(name = "lineaDireccion2", column = @Column(name = "destino_linea_direccion2")),
             @AttributeOverride(name = "codigoPostal", column = @Column(name = "destino_codigo_postal")),
@@ -86,20 +90,12 @@ public class PedidoEntity {
     @JsonBackReference
     private RutaEntity ruta;
 
-    public PedidoDTO toDTO() {
-        return PedidoDTO.builder()
-                .id(this.id)
-                .repartidor(this.repartidor != null ? this.repartidor.toDTO() : null)
-                .remitente(this.remitente != null ? this.remitente.toDTO() : null)
+    public PedidoRequest toDTO() {
+        return PedidoRequest.builder()
                 .origen(this.origen != null ? this.origen.toDTO() : null)
                 .destino(this.destino != null ? this.destino.toDTO() : null)
-                .estado(this.estado)
-                .estado_ultima_actualizacion(this.estado_ultima_actualizacion)
-                .pedido_devolucion(this.pedido_devolucion != null ? this.pedido_devolucion.toDTO() : null)
-                .precio(this.precio)
                 .bultos(this.bultos.stream().map(BultoEntity::toDTO).toList())
                 .observaciones(this.observaciones)
-                .ruta(this.ruta != null ? this.ruta.toDTO() : null)
                 .build();
     }
 }

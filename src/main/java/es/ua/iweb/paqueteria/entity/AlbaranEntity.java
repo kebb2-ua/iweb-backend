@@ -28,6 +28,8 @@ public class AlbaranEntity {
 
     @Embedded
     @AttributeOverrides({
+            @AttributeOverride(name = "nombre", column = @Column(name = "emisor_nombre")),
+            @AttributeOverride(name = "nif", column = @Column(name = "emisor_nif")),
             @AttributeOverride(name = "lineaDireccion1", column = @Column(name = "emisor_linea_direccion1")),
             @AttributeOverride(name = "lineaDireccion2", column = @Column(name = "emisor_linea_direccion2")),
             @AttributeOverride(name = "codigoPostal", column = @Column(name = "emisor_codigo_postal")),
@@ -44,6 +46,8 @@ public class AlbaranEntity {
 
     @Embedded
     @AttributeOverrides({
+            @AttributeOverride(name = "nombre", column = @Column(name = "receptor_nombre")),
+            @AttributeOverride(name = "nif", column = @Column(name = "receptor_nif")),
             @AttributeOverride(name = "lineaDireccion1", column = @Column(name = "receptor_linea_direccion1")),
             @AttributeOverride(name = "lineaDireccion2", column = @Column(name = "receptor_linea_direccion2")),
             @AttributeOverride(name = "codigoPostal", column = @Column(name = "receptor_codigo_postal")),
