@@ -2,7 +2,9 @@ package es.ua.iweb.paqueteria.service;
 
 import es.ua.iweb.paqueteria.dto.EstadoResponse;
 import es.ua.iweb.paqueteria.entity.PedidoEntity;
+import es.ua.iweb.paqueteria.entity.UserEntity;
 import es.ua.iweb.paqueteria.repository.PedidoRepository;
+import es.ua.iweb.paqueteria.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.Optional;
 public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
+    private final UserRepository userRepository;
 
     public PedidoEntity getPedidoById(Integer pedidoId) {
         Optional<PedidoEntity> optionalPedido = pedidoRepository.findById(pedidoId);
@@ -41,6 +44,19 @@ public class PedidoService {
             return EstadoResponse.builder().estado_actual(pedido.getEstado().name()).ultima_actualizacion(new Date()).build();
         }else{
             throw new IllegalArgumentException("Pedido con ID " + estadoId + " no encontrado.");
+        }
+    }
+
+    public PedidoEntity actualizarRepartidor(String idPedido, String emailRepartidor) {
+        Optional<PedidoEntity> optionalPedido = pedidoRepository.findById(Integer.parseInt(idPedido));
+        Optional<UserEntity> optionalRepartidor = userRepository.findByEmail(emailRepartidor);
+
+        if(optionalPedido.isPresent()) {
+            PedidoEntity pedido = optionalPedido.get();
+            pedido.setRepartidor(Integer.parseInt(idRepartidor));
+            return pedidoRepository.save(pedido);
+        }else{
+            throw new IllegalArgumentException("Pedido con ID " + idPedido + " no encontrado.");
         }
     }
 }

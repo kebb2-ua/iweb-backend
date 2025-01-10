@@ -38,5 +38,10 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.getPedidosByRepartidor(Integer.parseInt(idRepartidor)));
     }
 
+    // "pedidos/{idPedido}/asignar/{idRepartidor}": Asigna un repartidor a un pedido
+    @PostMapping("/listado/{idPedido}/asignar")
+    public ResponseEntity<PedidoEntity> asignarRepartidor(@PathVariable("idPedido") String idPedido, @RequestParam("emailRepartidor") String emailRepartidor) {
+        return ResponseEntity.ok(pedidoService.actualizarRepartidor(idPedido, emailRepartidor));
+    }
 
 }
