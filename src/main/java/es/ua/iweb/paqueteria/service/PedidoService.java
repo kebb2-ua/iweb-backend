@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,14 +99,14 @@ public class PedidoService {
 
     public PedidoEntity actualizarRepartidor(String idPedido, String emailRepartidor) {
         Optional<PedidoEntity> optionalPedido = pedidoRepository.findById(Integer.parseInt(idPedido));
-        Optional<UserEntity> optionalRepartidor = userRepository.findByEmail(emailRepartidor);
+        UserEntity repartidor = userService.getUserByEmail(emailRepartidor);
 
-        if(optionalPedido.isPresent()) {
+        if(optionalPedido.isPresent() && repartidor != null) {
             PedidoEntity pedido = optionalPedido.get();
-            pedido.setRepartidor(Integer.parseInt(idRepartidor));
+            pedido.setRepartidor(repartidor);
             return pedidoRepository.save(pedido);
         }else{
-            throw new IllegalArgumentException("Pedido con ID " + idPedido + " no encontrado.");
+            throw new IllegalArgumentException("Pedido con ID " + idPedido + " no encontrado o repartidor con email " + emailRepartidor + " no encontrado .");
         }
     }
 }

@@ -38,13 +38,13 @@ public class PedidoController {
     }
 
     // "pedidos/estado/{idPedido}": Devuelve un JSON con el estado actual del pedido
-    @GetMapping("/estado/{idPedido}")
+    @GetMapping("/{idPedido}/estado")
     public ResponseEntity<EstadoResponse> getEstadoPedido(@PathVariable String idPedido){
         return ResponseEntity.ok(pedidoService.getEstadoById(Integer.parseInt(idPedido)));
     }
 
     // "pedidos/{idPedido}/asignar/{idRepartidor}": Asigna un repartidor a un pedido
-    @PostMapping("/listado/{idPedido}/asignar")
+    @PostMapping("/{idPedido}/asignar")
     public ResponseEntity<PedidoEntity> asignarRepartidor(@PathVariable("idPedido") String idPedido, @RequestParam("emailRepartidor") String emailRepartidor) {
         return ResponseEntity.ok(pedidoService.actualizarRepartidor(idPedido, emailRepartidor));
     }
