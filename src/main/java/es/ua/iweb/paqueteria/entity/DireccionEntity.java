@@ -1,5 +1,6 @@
 package es.ua.iweb.paqueteria.entity;
 
+import es.ua.iweb.paqueteria.dto.DireccionDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,8 +41,20 @@ public class DireccionEntity {
     @OneToOne(mappedBy = "direccion")
     private UserEntity user;
 
-    public DireccionValue toDTO() {
+    public DireccionValue toEmbeddable() {
         return DireccionValue.builder()
+                .lineaDireccion1(lineaDireccion1)
+                .lineaDireccion2(lineaDireccion2)
+                .codigoPostal(codigoPostal)
+                .pais(pais)
+                .provincia(provincia)
+                .municipio(municipio)
+                .localidad(localidad)
+                .build();
+    }
+
+    public DireccionDTO toDTO() {
+        return DireccionDTO.builder()
                 .lineaDireccion1(lineaDireccion1)
                 .lineaDireccion2(lineaDireccion2)
                 .codigoPostal(codigoPostal)

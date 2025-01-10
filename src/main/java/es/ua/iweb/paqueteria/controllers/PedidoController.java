@@ -2,7 +2,6 @@ package es.ua.iweb.paqueteria.controllers;
 
 import es.ua.iweb.paqueteria.dto.EstadoPedidoDTO;
 import es.ua.iweb.paqueteria.dto.PedidoDTO;
-import es.ua.iweb.paqueteria.entity.UserEntity;
 import es.ua.iweb.paqueteria.service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @RestController

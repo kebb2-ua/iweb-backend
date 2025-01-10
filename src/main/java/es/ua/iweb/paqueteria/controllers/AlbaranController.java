@@ -2,6 +2,7 @@ package es.ua.iweb.paqueteria.controllers;
 
 import es.ua.iweb.paqueteria.entity.AlbaranEntity;
 import es.ua.iweb.paqueteria.service.AlbaranService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/albaranes")
 @RequiredArgsConstructor
+@Hidden
 public class AlbaranController {
 
     private final AlbaranService albaranService;
