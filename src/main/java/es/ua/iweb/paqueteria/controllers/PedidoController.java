@@ -1,23 +1,41 @@
 package es.ua.iweb.paqueteria.controllers;
 
 import es.ua.iweb.paqueteria.dto.EstadoResponse;
+import es.ua.iweb.paqueteria.dto.PedidoDTO;
 import es.ua.iweb.paqueteria.entity.PedidoEntity;
+import es.ua.iweb.paqueteria.entity.UserEntity;
 import es.ua.iweb.paqueteria.service.PedidoService;
-import es.ua.iweb.paqueteria.service.BultoService;
-
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/pedidos")
+@RequestMapping("api/v1/envios")
 @RequiredArgsConstructor
 public class PedidoController {
-    private PedidoService pedidoService;
+    @Autowired
+    private final PedidoService pedidoService;
 
-    private BultoService bultoService;
+    @GetMapping({"", "/", "/all"})
+    public ResponseEntity<List<PedidoDTO>> getAllPedidos() {
+        List<PedidoDTO> pedidos = pedidoService.getAllPedidos();
+        if(pedidos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(pedidos);
+    }
+
+    @PostMapping({"", "/"})
+    public ResponseEntity<PedidoDTO> addPedido(@RequestBody @Valid PedidoDTO pedido) {
+        String remitente = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.status(HttpStatus.CREATED).body(pedidoService.addPedido(remitente, pedido));
+    }
 
     // "pedidos/estado/{idPedido}": Devuelve un JSON con el estado actual del pedido
     @GetMapping("/estado/{idPedido}")
@@ -25,23 +43,9 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.getEstadoById(Integer.parseInt(idPedido)));
     }
 
-
-    // "pedidos/listado" Devuelve el listado de pedidos
-    @GetMapping("/listado")
-    public ResponseEntity<List<PedidoEntity>> getListadoPedidos() {
-        return ResponseEntity.ok(pedidoService.getAllPedidos());
-    }
-
-    // "pedidos/repartidor/{idRepartidor}": Listado de pedidos asignados a un repartidor
-    @GetMapping("/repartidor/{idRepartidor}")
-    public ResponseEntity<List<PedidoEntity>> getPedidosRepartidor(@PathVariable("idRepartidor") String idRepartidor) {
-        return ResponseEntity.ok(pedidoService.getPedidosByRepartidor(Integer.parseInt(idRepartidor)));
-    }
-
     // "pedidos/{idPedido}/asignar/{idRepartidor}": Asigna un repartidor a un pedido
     @PostMapping("/listado/{idPedido}/asignar")
     public ResponseEntity<PedidoEntity> asignarRepartidor(@PathVariable("idPedido") String idPedido, @RequestParam("emailRepartidor") String emailRepartidor) {
         return ResponseEntity.ok(pedidoService.actualizarRepartidor(idPedido, emailRepartidor));
     }
-
 }

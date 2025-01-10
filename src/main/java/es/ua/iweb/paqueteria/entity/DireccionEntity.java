@@ -40,4 +40,16 @@ public class DireccionEntity {
     @OneToOne(mappedBy = "direccion")
     private UserEntity user;
 
+    public DireccionValue toDTO() {
+        return DireccionValue.builder()
+                .lineaDireccion1(lineaDireccion1)
+                .lineaDireccion2(lineaDireccion2)
+                .codigoPostal(codigoPostal)
+                .pais(pais)
+                .provincia(provincia)
+                .municipio(municipio)
+                .localidad(localidad)
+                .build();
+    }
+
 }

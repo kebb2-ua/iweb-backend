@@ -2,6 +2,7 @@ package es.ua.iweb.paqueteria.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import es.ua.iweb.paqueteria.StringListConverter;
+import es.ua.iweb.paqueteria.dto.UserDTO;
 import es.ua.iweb.paqueteria.type.AccountStatusType;
 import es.ua.iweb.paqueteria.type.RoleType;
 import jakarta.persistence.*;
@@ -14,7 +15,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -65,6 +65,7 @@ public class UserEntity implements UserDetails {
 
     @Column(columnDefinition = "VARCHAR(20)")
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private AccountStatusType accountStatusType = AccountStatusType.NOT_VERIFIED;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
@@ -110,4 +111,18 @@ public class UserEntity implements UserDetails {
         return password;
     }
 
+    public UserDTO toDTO() {
+        return UserDTO.builder()
+                .id(this.id)
+                .nif(this.nif)
+                .nombre(this.nombre)
+                .apellidos(this.apellidos)
+                .razonSocial(this.razonSocial)
+                .email(this.email)
+                .direccion(this.direccion != null ? this.direccion.toDTO() : null)
+                .zona(this.zona != null ? this.zona.toDTO() : null)
+                .rolesList(this.rolesList)
+                .accountStatusType(this.accountStatusType)
+                .build();
+    }
 }

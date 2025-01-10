@@ -2,10 +2,12 @@ package es.ua.iweb.paqueteria.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import es.ua.iweb.paqueteria.dto.PedidoDTO;
 import es.ua.iweb.paqueteria.type.EstadoType;
 import es.ua.iweb.paqueteria.StringListConverter;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -63,7 +65,7 @@ public class PedidoEntity {
     private EstadoType estado;
 
     @Column
-    private Date estado_ultima_actualizacion;
+    private LocalDateTime estado_ultima_actualizacion;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private PedidoEntity pedido_devolucion;
@@ -73,6 +75,7 @@ public class PedidoEntity {
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @Builder.Default
     private List<BultoEntity> bultos = new ArrayList<>();
 
     @Column
@@ -80,7 +83,24 @@ public class PedidoEntity {
 
     // Relación con RutaEntity
     @ManyToOne
-    @JoinColumn(name = "ruta_id", nullable = false)
+    @JoinColumn(name = "ruta_id", nullable = true)
     @JsonBackReference
     private RutaEntity ruta;
+
+    public PedidoDTO toDTO() {
+        return PedidoDTO.builder()
+                .id(this.id)
+                .repartidor(this.repartidor != null ? this.repartidor.toDTO() : null)
+                .remitente(this.remitente != null ? this.remitente.toDTO() : null)
+                .origen(this.origen != null ? this.origen.toDTO() : null)
+                .destino(this.destino != null ? this.destino.toDTO() : null)
+                .estado(this.estado)
+                .estado_ultima_actualizacion(this.estado_ultima_actualizacion)
+                .pedido_devolucion(this.pedido_devolucion != null ? this.pedido_devolucion.toDTO() : null)
+                .precio(this.precio)
+                .bultos(this.bultos.stream().map(BultoEntity::toDTO).toList())
+                .observaciones(this.observaciones)
+                .ruta(this.ruta != null ? this.ruta.toDTO() : null)
+                .build();
+    }
 }
