@@ -2,12 +2,13 @@ package es.ua.iweb.paqueteria.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import es.ua.iweb.paqueteria.dto.PedidoRequest;
 import es.ua.iweb.paqueteria.type.EstadoType;
 import es.ua.iweb.paqueteria.StringListConverter;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,6 +37,8 @@ public class PedidoEntity {
 
     @Embedded
     @AttributeOverrides({
+            @AttributeOverride(name = "nombre", column = @Column(name = "origen_nombre")),
+            @AttributeOverride(name = "nif", column = @Column(name = "origen_nif")),
             @AttributeOverride(name = "lineaDireccion1", column = @Column(name = "origen_linea_direccion1")),
             @AttributeOverride(name = "lineaDireccion2", column = @Column(name = "origen_linea_direccion2")),
             @AttributeOverride(name = "codigoPostal", column = @Column(name = "origen_codigo_postal")),
@@ -48,6 +51,8 @@ public class PedidoEntity {
 
     @Embedded
     @AttributeOverrides({
+            @AttributeOverride(name = "nombre", column = @Column(name = "destino_nombre")),
+            @AttributeOverride(name = "nif", column = @Column(name = "destino_nif")),
             @AttributeOverride(name = "lineaDireccion1", column = @Column(name = "destino_linea_direccion1")),
             @AttributeOverride(name = "lineaDireccion2", column = @Column(name = "destino_linea_direccion2")),
             @AttributeOverride(name = "codigoPostal", column = @Column(name = "destino_codigo_postal")),
@@ -63,7 +68,7 @@ public class PedidoEntity {
     private EstadoType estado;
 
     @Column
-    private Date estado_ultima_actualizacion;
+    private LocalDateTime estado_ultima_actualizacion;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private PedidoEntity pedido_devolucion;
@@ -73,6 +78,7 @@ public class PedidoEntity {
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @Builder.Default
     private List<BultoEntity> bultos = new ArrayList<>();
 
     @Column
@@ -80,7 +86,16 @@ public class PedidoEntity {
 
     // Relación con RutaEntity
     @ManyToOne
-    @JoinColumn(name = "ruta_id", nullable = false)
+    @JoinColumn(name = "ruta_id", nullable = true)
     @JsonBackReference
     private RutaEntity ruta;
+
+    public PedidoRequest toDTO() {
+        return PedidoRequest.builder()
+                .origen(this.origen != null ? this.origen.toDTO() : null)
+                .destino(this.destino != null ? this.destino.toDTO() : null)
+                .bultos(this.bultos.stream().map(BultoEntity::toDTO).toList())
+                .observaciones(this.observaciones)
+                .build();
+    }
 }

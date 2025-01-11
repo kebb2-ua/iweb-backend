@@ -5,6 +5,7 @@ import es.ua.iweb.paqueteria.dto.LoginRequest;
 import es.ua.iweb.paqueteria.dto.RegisterRequest;
 import es.ua.iweb.paqueteria.entity.UserEntity;
 import es.ua.iweb.paqueteria.service.AuthService;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/auth")
 @RequiredArgsConstructor
 @CrossOrigin
+@Hidden
 public class AuthController {
     @Autowired
     private final AuthService authService;

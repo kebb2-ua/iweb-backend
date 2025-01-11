@@ -5,13 +5,16 @@ import es.ua.iweb.paqueteria.exception.*;
 import es.ua.iweb.paqueteria.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 
@@ -20,6 +23,10 @@ import java.util.List;
 public class ControllerExceptionHandler {
     private final static String METHOD_ARGUMENT_NOT_VALID_KEY = "METHOD_ARGUMENT_NOT_VALID_KEY";
     private final static String INVALID_JSON = "INVALID_JSON";
+    private final static String USER_NOT_FOUND = "USER_NOT_FOUND";
+    private final static String RESOURCE_NOT_FOUND = "RESOURCE_NOT_FOUND";
+    private final static String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
+    private final static String METHOD_NOT_ALLOWED = "METHOD_NOT_ALLOWED";
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -45,6 +52,12 @@ public class ControllerExceptionHandler {
         return ex.toList();
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(BadCredentialsException.class)
+    public List<ErrorResponse> handleBadCredentialsException(final BadCredentialsException ex) {
+        return List.of(ErrorResponse.of(ErrorMessages.USER_NOT_FOUND, USER_NOT_FOUND));
+    }
+
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UnauthorizedException.class)
     public List<ErrorResponse> handleUnauthorizedException(final UnauthorizedException ex) {
@@ -61,6 +74,31 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(ConflictException.class)
     public List<ErrorResponse> handleConflictException(final ConflictException ex) {
         return ex.toList();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MalformedObjectException.class)
+    public List<ErrorResponse> handleMalformedJsonException(final MalformedObjectException ex) {
+        return ex.toList();
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoResourceFoundException.class)
+    public List<ErrorResponse> handleNoResourceFoundException(final NoResourceFoundException ex) {
+        return List.of(ErrorResponse.of(ErrorMessages.RESOURCE_NOT_FOUND, RESOURCE_NOT_FOUND));
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public List<ErrorResponse> handleHttpRequestMethodNotSupportedException(final HttpRequestMethodNotSupportedException ex) {
+        return List.of(ErrorResponse.of(ErrorMessages.METHOD_NOT_ALLOWED, METHOD_NOT_ALLOWED));
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    public List<ErrorResponse> handleException(final Exception ex) {
+        ex.printStackTrace();
+        return List.of(ErrorResponse.of(ErrorMessages.INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR));
     }
 
     private static String getMessage(ObjectError error) {

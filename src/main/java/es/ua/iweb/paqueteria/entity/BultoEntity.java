@@ -2,6 +2,7 @@ package es.ua.iweb.paqueteria.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import es.ua.iweb.paqueteria.dto.BultoDTO;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -54,4 +55,16 @@ public class BultoEntity {
     @JoinColumn(name = "pedido_id", nullable = false)
     @JsonBackReference
     private PedidoEntity pedido;
+
+    public BultoDTO toDTO() {
+        return BultoDTO.builder()
+                .id(this.id)
+                .descripcion(this.descripcion)
+                .peso(this.peso)
+                .altura(this.altura)
+                .ancho(this.ancho)
+                .profundidad(this.profundidad)
+                .peligroso(this.peligroso)
+                .build();
+    }
 }

@@ -1,5 +1,6 @@
 package es.ua.iweb.paqueteria.entity;
 
+import es.ua.iweb.paqueteria.dto.ZonaDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,4 +25,10 @@ public class ZonaEntity {
     @OneToOne(mappedBy = "zona")
     private UserEntity user;
 
+    public ZonaDTO toDTO() {
+        return ZonaDTO.builder()
+                .id(this.id)
+                .nombre(this.nombre)
+                .build();
+    }
 }
