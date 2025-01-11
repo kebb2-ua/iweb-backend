@@ -19,7 +19,7 @@ public class UserDTO {
     private String apellidos;
     private String razonSocial;
     private String email;
-    private DireccionValue direccion;
+    private DireccionDTO direccion;
     private ZonaDTO zona;
     private List<RoleType> rolesList;
     private AccountStatusType accountStatusType;

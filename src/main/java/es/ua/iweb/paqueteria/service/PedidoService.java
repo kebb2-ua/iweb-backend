@@ -1,6 +1,8 @@
 package es.ua.iweb.paqueteria.service;
 
-import es.ua.iweb.paqueteria.dto.PedidoDTO;
+import es.ua.iweb.paqueteria.dto.EstadoPedidoDTO;
+import es.ua.iweb.paqueteria.dto.PedidoRequest;
+import es.ua.iweb.paqueteria.dto.PedidoResponse;
 import es.ua.iweb.paqueteria.entity.BultoEntity;
 import es.ua.iweb.paqueteria.entity.DireccionValue;
 import es.ua.iweb.paqueteria.dto.EstadoResponse;
@@ -11,11 +13,11 @@ import es.ua.iweb.paqueteria.exception.MalformedObjectException;
 import es.ua.iweb.paqueteria.repository.BultoRepository;
 import es.ua.iweb.paqueteria.repository.PedidoRepository;
 import es.ua.iweb.paqueteria.type.EstadoType;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -41,7 +43,7 @@ public class PedidoService {
     private final UserService userService;
 
     @Transactional
-    public PedidoDTO addPedido(String email, PedidoDTO pedido) {
+    public PedidoResponse addPedido(String email, PedidoRequest pedido) {
         try {
             UserEntity remitente = userService.getUserByEmail(email);
 
@@ -69,13 +71,17 @@ public class PedidoService {
             bultos = bultoRepository.saveAll(bultos);
             pedidoEntity.setBultos(bultos);
 
-            return pedidoRepository.save(pedidoEntity).toDTO();
+            PedidoEntity pedidoFinal = pedidoRepository.save(pedidoEntity);
+            return PedidoResponse.builder()
+                    .id_envio(pedidoFinal.getId())
+                    .fecha_creacion(pedidoFinal.getEstado_ultima_actualizacion())
+                    .build();
         } catch (NullPointerException e) {
             throw MalformedObjectException.invalidObject();
         }
     }
 
-    public List<PedidoDTO> getAllPedidos() {
+    public List<PedidoRequest> getAllPedidos() {
         return this.pedidoRepository.findAll().stream().map(PedidoEntity::toDTO).toList();
     }
 
@@ -85,28 +91,26 @@ public class PedidoService {
 
     public List<PedidoEntity> getPedidosByRutaId(Integer rutaId){ return pedidoRepository.findByRutaId(rutaId); }
 
-    public EstadoResponse getEstadoById(Integer estadoId) {
-        Optional<PedidoEntity> optionalPedido = pedidoRepository.findById(estadoId);
-
-        if(optionalPedido.isPresent()) {
-            PedidoEntity pedido = optionalPedido.get();
-
-            return EstadoResponse.builder().estado_actual(pedido.getEstado().name()).ultima_actualizacion(new Date()).build();
-        }else{
-            throw new IllegalArgumentException("Pedido con ID " + estadoId + " no encontrado.");
-        }
-    }
-
+    @Transactional
     public PedidoEntity actualizarRepartidor(String idPedido, String emailRepartidor) {
         Optional<PedidoEntity> optionalPedido = pedidoRepository.findById(Integer.parseInt(idPedido));
         UserEntity repartidor = userService.getUserByEmail(emailRepartidor);
 
-        if(optionalPedido.isPresent() && repartidor != null) {
+        if (optionalPedido.isPresent() && repartidor != null) {
             PedidoEntity pedido = optionalPedido.get();
             pedido.setRepartidor(repartidor);
             return pedidoRepository.save(pedido);
-        }else{
+        } else {
             throw new IllegalArgumentException("Pedido con ID " + idPedido + " no encontrado o repartidor con email " + emailRepartidor + " no encontrado .");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public EstadoPedidoDTO getEstadoPedido(Integer id) {
+        PedidoEntity pedido = pedidoRepository.findById(id).orElseThrow(DataNotFoundException::pedidoNotFound);
+        return EstadoPedidoDTO.builder()
+                .estado(pedido.getEstado())
+                .estado_ultima_actualizacion(pedido.getEstado_ultima_actualizacion())
+                .build();
     }
 }

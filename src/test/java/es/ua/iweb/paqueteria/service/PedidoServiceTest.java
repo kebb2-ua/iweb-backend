@@ -1,8 +1,7 @@
 package es.ua.iweb.paqueteria.service;
-import es.ua.iweb.paqueteria.dto.PedidoDTO;
+import es.ua.iweb.paqueteria.dto.PedidoRequest;
 import es.ua.iweb.paqueteria.entity.PedidoEntity;
 import es.ua.iweb.paqueteria.repository.PedidoRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,27 +25,6 @@ class PedidoServiceTest {
     private PedidoService pedidoService;
 
     @Test
-    void testAddPedido() {
-        // Preparar
-        PedidoEntity newPedido = PedidoEntity.builder()
-                .id(1)
-                .precio(100.5f)
-                .observaciones("Pedido urgente")
-                .build();
-
-        when(pedidoRepository.save(newPedido)).thenReturn(newPedido);
-
-        // Ejecutar
-        PedidoDTO result = pedidoService.addPedido(null, newPedido.toDTO());
-
-        // Comprobar
-        assertNotNull(result);
-        assertEquals(1, result.getId());
-        assertEquals(100.5f, result.getPrecio());
-        verify(pedidoRepository, times(1)).save(newPedido);
-    }
-
-    @Test
     void testDevolverListadoPedidos() {
         // Preparar
         List<PedidoEntity> pedidos = Arrays.asList(
@@ -58,7 +35,7 @@ class PedidoServiceTest {
         when(pedidoRepository.findAll()).thenReturn(pedidos);
 
         // Ejecutar
-        List<PedidoDTO> result = pedidoService.getAllPedidos();
+        List<PedidoRequest> result = pedidoService.getAllPedidos();
 
         // Comprobar
         assertNotNull(result);

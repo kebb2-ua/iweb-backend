@@ -2,6 +2,7 @@ package es.ua.iweb.paqueteria.controllers;
 
 import es.ua.iweb.paqueteria.entity.TarifaEntity;
 import es.ua.iweb.paqueteria.service.TarifaService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.List;
 @RequestMapping("/api/v1/tarifas")
 @RequiredArgsConstructor
 @CrossOrigin
+@Hidden
 public class TarifaController {
 
     private final TarifaService tarifaService;

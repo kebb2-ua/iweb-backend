@@ -33,6 +33,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth -> auth
+                                .requestMatchers("/api/docs/**").permitAll()
                                 .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register").permitAll() // Permitir acceso sin autenticación a /login
                                 .requestMatchers("/api/v1/auth/recover/send", "/api/v1/auth/verification/verify").permitAll()
                                 .anyRequest().authenticated()
