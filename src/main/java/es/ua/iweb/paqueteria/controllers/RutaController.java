@@ -1,5 +1,6 @@
 package es.ua.iweb.paqueteria.controllers;
 
+import es.ua.iweb.paqueteria.dto.*;
 import es.ua.iweb.paqueteria.entity.RutaEntity;
 import es.ua.iweb.paqueteria.service.RutaService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -20,7 +21,7 @@ public class RutaController {
     private final RutaService rutaService;
 
     @PostMapping
-    public ResponseEntity<RutaEntity> createRuta(@RequestBody RutaEntity ruta) {
+    public ResponseEntity<RutaEntity> createRuta(@RequestBody RutaRequest ruta) {
         return ResponseEntity.ok(rutaService.addRuta(ruta));
     }
 
@@ -34,10 +35,10 @@ public class RutaController {
         return ResponseEntity.ok(rutaService.getRutaById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<RutaEntity> updateRuta(@PathVariable Integer id, @RequestBody RutaEntity ruta) {
-        return ResponseEntity.ok(rutaService.updateRuta(id, ruta));
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<RutaEntity> updateRuta(@PathVariable Integer id, @RequestBody RutaEntity ruta) {
+//        return ResponseEntity.ok(rutaService.updateRuta(id, ruta));
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRuta(@PathVariable Integer id) {

@@ -1,7 +1,11 @@
 package es.ua.iweb.paqueteria.service;
 
+import es.ua.iweb.paqueteria.dto.RutaDTO;
+import es.ua.iweb.paqueteria.dto.RutaRequest;
+import es.ua.iweb.paqueteria.entity.PedidoEntity;
 import es.ua.iweb.paqueteria.entity.RutaEntity;
 import es.ua.iweb.paqueteria.repository.RutaRepository;
+import es.ua.iweb.paqueteria.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +18,25 @@ import java.util.Optional;
 public class RutaService {
     private final RutaRepository rutaRepository;
 
-    public RutaEntity addRuta(RutaEntity ruta) {
-        return rutaRepository.save(ruta);
+    private final PedidoService pedidoService;
+
+    private final UserService userService;
+
+
+    public RutaEntity addRuta(RutaRequest ruta) {
+
+        RutaEntity nuevaRuta = RutaEntity.builder()
+                .fecha(ruta.getFecha())
+                .repartidor(userService.getUserById(ruta.getRepartidorId()))
+                .build();
+
+        for(Integer idPedido : ruta.getIdsPedidos()) {
+            PedidoEntity pedido = pedidoService.getPedidoById(idPedido);
+            nuevaRuta.getPedidos().add(pedido);
+            pedido.setRuta(nuevaRuta);
+        }
+
+        return rutaRepository.save(nuevaRuta);
     }
 
     public List<RutaEntity> getAllRutas() {
