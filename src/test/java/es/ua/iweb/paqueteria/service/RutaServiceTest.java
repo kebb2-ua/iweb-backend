@@ -75,7 +75,7 @@ class RutaServiceTest {
         when(rutaRepository.findByRepartidorId(repartidorId)).thenReturn(rutas);
 
         // Probar
-        List<RutaEntity> result = rutaService.getRutasByReoartidor(repartidorId);
+        List<RutaEntity> result = rutaService.getRutasByRepartidor(repartidorId);
 
         // Comprobar
         assertNotNull(result);

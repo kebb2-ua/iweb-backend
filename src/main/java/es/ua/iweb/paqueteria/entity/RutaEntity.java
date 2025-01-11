@@ -25,6 +25,12 @@ public class RutaEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
+    @Column(nullable = false)
+    private String origen;
+
+    @Column(nullable = false)
+    private String destino;
+
     @ManyToOne(cascade = CascadeType.ALL)
     private UserEntity repartidor;
 
@@ -39,6 +45,8 @@ public class RutaEntity {
     public RutaDTO toDTO() {
         return RutaDTO.builder()
                 .id(this.id)
+                .origen(this.origen)
+                .destino(this.destino)
                 .repartidor(this.repartidor.toDTO())
                 .fecha(this.fecha)
                 .pedidos(this.pedidos.stream().map(PedidoEntity::toDTO).toList())
