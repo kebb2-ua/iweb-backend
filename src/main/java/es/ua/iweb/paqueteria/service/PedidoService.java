@@ -5,6 +5,7 @@ import es.ua.iweb.paqueteria.dto.PedidoRequest;
 import es.ua.iweb.paqueteria.dto.PedidoResponse;
 import es.ua.iweb.paqueteria.entity.BultoEntity;
 import es.ua.iweb.paqueteria.entity.DireccionValue;
+import es.ua.iweb.paqueteria.dto.EstadoResponse;
 import es.ua.iweb.paqueteria.entity.PedidoEntity;
 import es.ua.iweb.paqueteria.entity.UserEntity;
 import es.ua.iweb.paqueteria.exception.DataNotFoundException;
@@ -12,13 +13,16 @@ import es.ua.iweb.paqueteria.exception.MalformedObjectException;
 import es.ua.iweb.paqueteria.repository.BultoRepository;
 import es.ua.iweb.paqueteria.repository.PedidoRepository;
 import es.ua.iweb.paqueteria.type.EstadoType;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +30,11 @@ public class PedidoService {
 
     @Autowired
     private final PedidoRepository pedidoRepository;
+
+    public PedidoEntity getPedidoById(Integer pedidoId) {
+        Optional<PedidoEntity> optionalPedido = pedidoRepository.findById(pedidoId);
+        return optionalPedido.orElseThrow(() -> new IllegalArgumentException("Pedido con ID " + pedidoId + " no encontrado."));
+    }
 
     @Autowired
     private final BultoRepository bultoRepository;
@@ -82,6 +91,21 @@ public class PedidoService {
 
     public List<PedidoEntity> getPedidosByRutaId(Integer rutaId){ return pedidoRepository.findByRutaId(rutaId); }
 
+    @Transactional
+    public PedidoEntity actualizarRepartidor(String idPedido, String emailRepartidor) {
+        Optional<PedidoEntity> optionalPedido = pedidoRepository.findById(Integer.parseInt(idPedido));
+        UserEntity repartidor = userService.getUserByEmail(emailRepartidor);
+
+        if (optionalPedido.isPresent() && repartidor != null) {
+            PedidoEntity pedido = optionalPedido.get();
+            pedido.setRepartidor(repartidor);
+            return pedidoRepository.save(pedido);
+        } else {
+            throw new IllegalArgumentException("Pedido con ID " + idPedido + " no encontrado o repartidor con email " + emailRepartidor + " no encontrado .");
+        }
+    }
+
+    @Transactional(readOnly = true)
     public EstadoPedidoDTO getEstadoPedido(Integer id) {
         PedidoEntity pedido = pedidoRepository.findById(id).orElseThrow(DataNotFoundException::pedidoNotFound);
         return EstadoPedidoDTO.builder()

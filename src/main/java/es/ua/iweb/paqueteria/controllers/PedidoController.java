@@ -1,6 +1,10 @@
 package es.ua.iweb.paqueteria.controllers;
 
+
+import es.ua.iweb.paqueteria.entity.PedidoEntity;
+import es.ua.iweb.paqueteria.entity.UserEntity;
 import es.ua.iweb.paqueteria.dto.*;
+
 import es.ua.iweb.paqueteria.service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -41,6 +45,13 @@ public class PedidoController {
     public ResponseEntity<PedidoResponse> addPedido(@RequestBody @Valid PedidoRequest pedido) {
         String remitente = SecurityContextHolder.getContext().getAuthentication().getName();
         return ResponseEntity.status(HttpStatus.CREATED).body(pedidoService.addPedido(remitente, pedido));
+    }
+
+
+    // "pedidos/{idPedido}/asignar/{idRepartidor}": Asigna un repartidor a un pedido
+    @PostMapping("/{idPedido}/asignar")
+    public ResponseEntity<PedidoEntity> asignarRepartidor(@PathVariable("idPedido") String idPedido, @RequestParam("emailRepartidor") String emailRepartidor) {
+        return ResponseEntity.ok(pedidoService.actualizarRepartidor(idPedido, emailRepartidor));
     }
 
     @Operation(summary = "Obtiene el estado de un pedido")
