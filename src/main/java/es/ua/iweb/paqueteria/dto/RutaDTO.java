@@ -18,14 +18,6 @@ public class RutaDTO {
     private Integer id;
 
     @NotNull(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
-    @NotEmpty(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
-    private String origen;
-
-    @NotNull(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
-    @NotEmpty(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
-    private String destino;
-
-    @NotNull(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
     @Valid
     private UserDTO repartidor;
 

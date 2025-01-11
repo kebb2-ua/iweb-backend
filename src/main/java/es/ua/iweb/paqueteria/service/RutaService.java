@@ -29,8 +29,6 @@ public class RutaService {
 
     public RutaEntity updateRuta(Integer id, RutaEntity rutaDetails) {
         RutaEntity ruta = getRutaById(id);
-        ruta.setOrigen(rutaDetails.getOrigen());
-        ruta.setDestino(rutaDetails.getDestino());
         ruta.setFecha(rutaDetails.getFecha());
         ruta.setRepartidor(rutaDetails.getRepartidor());
         return rutaRepository.save(ruta);
@@ -47,13 +45,5 @@ public class RutaService {
 
     public List<RutaEntity> getRutasByFecha(Date fecha) {
         return rutaRepository.findByFecha(fecha);
-    }
-
-    public List<RutaEntity> getRutasByCiudadOrigen(String ciudad) {
-        return rutaRepository.findByOrigen(ciudad);
-    }
-
-    public List<RutaEntity> getRutasByCiudadDestino(String ciudad) {
-        return rutaRepository.findByDestino(ciudad);
     }
 }

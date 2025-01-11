@@ -11,6 +11,4 @@ import java.util.List;
 public interface RutaRepository extends JpaRepository<RutaEntity, Integer> {
     List<RutaEntity> findByRepartidorId(Integer repartidorId);
     List<RutaEntity> findByFecha(Date fecha);
-    List<RutaEntity> findByOrigen(String origen);
-    List<RutaEntity> findByDestino(String destino);
 }

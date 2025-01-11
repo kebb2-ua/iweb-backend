@@ -45,16 +45,6 @@ public class RutaController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/origen/{ciudad}")
-    public ResponseEntity<List<RutaEntity>> getRutasByCiudadOrigen(@PathVariable String ciudad) {
-        return ResponseEntity.ok(rutaService.getRutasByCiudadOrigen(ciudad));
-    }
-
-    @GetMapping("/destino/{ciudad}")
-    public ResponseEntity<List<RutaEntity>> getRutasByCiudadDestino(@PathVariable String ciudad) {
-        return ResponseEntity.ok(rutaService.getRutasByCiudadDestino(ciudad));
-    }
-
     @GetMapping("/repartidor/{id}")
     public ResponseEntity<List<RutaEntity>> getRutasByRepartidor(@PathVariable Integer id) {
         return ResponseEntity.ok(rutaService.getRutasByRepartidor(id));
