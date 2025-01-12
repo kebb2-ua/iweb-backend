@@ -20,6 +20,7 @@ spring:
       idle-timeout: 600000
       max-lifetime: 1800000
   mail:
+    from-header: "Yaco Packages <ua-pracs@kikisito.com>"
     host: "mail.kikisito.com"
     port: 587
     username: "ua-pracs@kikisito.com"
