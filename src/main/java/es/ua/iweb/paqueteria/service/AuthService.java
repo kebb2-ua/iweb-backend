@@ -3,17 +3,18 @@ package es.ua.iweb.paqueteria.service;
 import es.ua.iweb.paqueteria.dto.AuthenticationResponse;
 import es.ua.iweb.paqueteria.dto.LoginRequest;
 import es.ua.iweb.paqueteria.dto.RegisterRequest;
+import es.ua.iweb.paqueteria.entity.DireccionEntity;
 import es.ua.iweb.paqueteria.entity.PasswordResetEntity;
 import es.ua.iweb.paqueteria.entity.SessionEntity;
 import es.ua.iweb.paqueteria.entity.UserEntity;
 import es.ua.iweb.paqueteria.exception.*;
+import es.ua.iweb.paqueteria.repository.DireccionRepository;
 import es.ua.iweb.paqueteria.repository.PasswordResetRepository;
 import es.ua.iweb.paqueteria.repository.SessionRepository;
 import es.ua.iweb.paqueteria.repository.UserRepository;
 import es.ua.iweb.paqueteria.type.AccountStatusType;
 import es.ua.iweb.paqueteria.type.RoleType;
 import es.ua.iweb.paqueteria.type.TokenType;
-import jakarta.transaction.Transactional;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +47,9 @@ public class AuthService {
 
     @Autowired
     private final SessionRepository sessionRepository;
+
+    @Autowired
+    private final DireccionRepository direccionRepository;
 
     @Autowired
     private final PasswordEncoder passwordEncoder;
@@ -112,9 +117,14 @@ public class AuthService {
         passwordResetRepository.save(passwordReset);
     }
 
+    @Transactional
     public AuthenticationResponse register(RegisterRequest request) {
         userRepository.findByEmail(request.getEmail()).ifPresent((userEntity) -> {
             throw ConflictException.emailIsRegistered();
+        });
+
+        userRepository.findByNif(request.getNif()).ifPresent((userEntity) -> {
+            throw ConflictException.nifIsRegistered();
         });
 
         List<RoleType> roleTypeList = new ArrayList<>();
@@ -133,7 +143,23 @@ public class AuthService {
 
         var savedUser = saveCredentials(userEntity);
 
-        // TODO GUARDAR DIRECCION
+        DireccionEntity direccionEntity = direccionRepository.save(
+                DireccionEntity.builder()
+                .user(savedUser)
+                .nombre(request.getRazonSocial() != null ? request.getRazonSocial() : request.getNombre() + " " + request.getApellidos())
+                .nif(request.getNif())
+                .lineaDireccion1(request.getDireccion().getLineaDireccion1())
+                .lineaDireccion2(request.getDireccion().getLineaDireccion2())
+                .municipio(request.getDireccion().getMunicipio())
+                .localidad(request.getDireccion().getLocalidad())
+                .codigoPostal(request.getDireccion().getCodigoPostal())
+                .provincia(request.getDireccion().getProvincia())
+                .pais(request.getDireccion().getPais())
+                .build()
+        );
+
+        savedUser.setDireccion(direccionEntity);
+        saveCredentials(savedUser);
 
         var accessToken = jwtService.generateAccessToken(userEntity);
         var refreshToken = jwtService.generateRefreshToken(userEntity);

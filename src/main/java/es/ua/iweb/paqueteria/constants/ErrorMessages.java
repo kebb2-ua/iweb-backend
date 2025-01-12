@@ -10,6 +10,7 @@ public final class ErrorMessages {
     public static final String USER_NOT_FOUND = "User not found";
     public static final String EMAIL_IS_REGISTERED = "Email is already registered.";
     public static final String EMAIL_IS_VERIFIED = "Email is already verified.";
+    public static final String NIF_IS_REGISTERED = "NIF is already registered.";
     public static final String NOT_AUTHORIZED = "Not authorized";
     public static final String PASSWORDS_DONT_MATCH = "Passwords do not match";
     public static final String EMAIL_ALREADY_VERIFIED = "This account has its email already verified";
