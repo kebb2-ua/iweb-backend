@@ -3,6 +3,7 @@ package es.ua.iweb.paqueteria.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import es.ua.iweb.paqueteria.constants.ErrorMessages;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -16,6 +17,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RutaRequest {
     @NotNull(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
+    @NotBlank(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
     @Valid
     private Integer repartidorId;
 

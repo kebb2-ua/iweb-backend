@@ -4,6 +4,7 @@ import es.ua.iweb.paqueteria.dto.RutaDTO;
 import es.ua.iweb.paqueteria.dto.RutaRequest;
 import es.ua.iweb.paqueteria.entity.PedidoEntity;
 import es.ua.iweb.paqueteria.entity.RutaEntity;
+import es.ua.iweb.paqueteria.entity.UserEntity;
 import es.ua.iweb.paqueteria.repository.RutaRepository;
 import es.ua.iweb.paqueteria.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -48,10 +49,11 @@ public class RutaService {
                 .orElseThrow(() -> new RuntimeException("Ruta no encontrada con ID: " + id));
     }
 
-    public RutaEntity updateRuta(Integer id, RutaEntity rutaDetails) {
+    public RutaEntity updateRuta(Integer id, RutaRequest rutaDetails) {
         RutaEntity ruta = getRutaById(id);
+        UserEntity repartidor = userService.getUserById(rutaDetails.getRepartidorId());
         ruta.setFecha(rutaDetails.getFecha());
-        ruta.setRepartidor(rutaDetails.getRepartidor());
+        ruta.setRepartidor(repartidor);
         return rutaRepository.save(ruta);
     }
 

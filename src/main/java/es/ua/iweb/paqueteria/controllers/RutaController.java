@@ -1,15 +1,17 @@
 package es.ua.iweb.paqueteria.controllers;
 
 import es.ua.iweb.paqueteria.dto.*;
-import es.ua.iweb.paqueteria.entity.RutaEntity;
+import es.ua.iweb.paqueteria.entity.*;
 import es.ua.iweb.paqueteria.service.RutaService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/rutas")
@@ -35,10 +37,40 @@ public class RutaController {
         return ResponseEntity.ok(rutaService.getRutaById(id));
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<RutaEntity> updateRuta(@PathVariable Integer id, @RequestBody RutaEntity ruta) {
-//        return ResponseEntity.ok(rutaService.updateRuta(id, ruta));
-//    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<RutaResponse> updateRuta(@PathVariable Integer id, @RequestBody RutaRequest rutaRequest) {
+        RutaEntity updatedRutaEntity = rutaService.updateRuta(id, rutaRequest);
+
+        RutaResponse rutaResponse = RutaResponse.builder()
+                .id(updatedRutaEntity.getId())
+                .repartidor(mapToUserDTO(updatedRutaEntity.getRepartidor()))
+                .fecha(updatedRutaEntity.getFecha())
+                .pedidos(updatedRutaEntity.getPedidos() != null ? updatedRutaEntity.getPedidos().stream().map(this::mapToPedidoRequest).collect(Collectors.toList()) : null)
+                .build();
+
+        return ResponseEntity.ok(rutaResponse);
+    }
+
+    private UserDTO mapToUserDTO(UserEntity userEntity) {
+        return UserDTO.builder()
+                .id(userEntity.getId())
+                .nif(userEntity.getNif())
+                .nombre(userEntity.getNombre())
+                .apellidos(userEntity.getApellidos())
+                .razonSocial(userEntity.getRazonSocial())
+                .email(userEntity.getEmail())
+                .build();
+    }
+
+    private PedidoRequest mapToPedidoRequest(PedidoEntity pedidoEntity) {
+        return PedidoRequest.builder()
+                .origen(pedidoEntity.getOrigen().toDTO())
+                .destino(pedidoEntity.getDestino().toDTO())
+                .bultos(pedidoEntity.getBultos() != null ? pedidoEntity.getBultos().stream().map(BultoEntity::toDTO).collect(Collectors.toList()) : null)
+                .observaciones(pedidoEntity.getObservaciones())
+                .build();
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRuta(@PathVariable Integer id) {
@@ -53,6 +85,14 @@ public class RutaController {
 
     @GetMapping("/fecha")
     public ResponseEntity<List<RutaEntity>> getRutasByFecha(@RequestParam Date fecha) {
-        return ResponseEntity.ok(rutaService.getRutasByFecha(fecha));
+        // Limpiar las horas de la fecha para que no se tengan en cuenta
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fecha);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        Date fechaSinHora = calendar.getTime();
+        return ResponseEntity.ok(rutaService.getRutasByFecha(fechaSinHora));
     }
 }
