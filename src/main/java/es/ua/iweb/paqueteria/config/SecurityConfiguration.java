@@ -9,6 +9,7 @@ import org.springframework.security.access.expression.method.MethodSecurityExpre
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -31,10 +32,11 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers("/api/docs/**").permitAll()
-                                .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register").permitAll() // Permitir acceso sin autenticación a /login
+                                .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register").permitAll()
                                 .requestMatchers("/api/v1/auth/recover/send", "/api/v1/auth/verification/verify").permitAll()
                                 .anyRequest().authenticated()
                 )
@@ -42,12 +44,10 @@ public class SecurityConfiguration {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout((logout) ->
-                        logout.deleteCookies("remove")
-                                .invalidateHttpSession(false)
-                                .logoutUrl("/api/v1/auth/logout")
+                        logout.logoutUrl("/api/v1/auth/logout")
                                 .addLogoutHandler(logoutHandler)
-                                .logoutSuccessHandler(
-                                        ((request, response, authentication) -> SecurityContextHolder.clearContext())))
+                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+                )
         ;
         return httpSecurity.build();
     }

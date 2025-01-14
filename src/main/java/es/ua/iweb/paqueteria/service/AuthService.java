@@ -118,6 +118,15 @@ public class AuthService {
     }
 
     @Transactional
+    public void logout(String rawToken) {
+        if (rawToken == null || !rawToken.startsWith("Bearer ")) {
+            return;
+        }
+        String jwt = rawToken.substring(7);
+        sessionRepository.findByAccessToken(jwtService.extractAccessToken(jwt)).ifPresent(sessionRepository::delete);
+    }
+
+    @Transactional
     public AuthenticationResponse register(RegisterRequest request) {
         userRepository.findByEmail(request.getEmail()).ifPresent((userEntity) -> {
             throw ConflictException.emailIsRegistered();
