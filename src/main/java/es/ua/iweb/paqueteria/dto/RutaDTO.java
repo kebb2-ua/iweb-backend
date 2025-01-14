@@ -26,5 +26,5 @@ public class RutaDTO {
 
     @NotNull(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
     @NotEmpty(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
-    private List<@Valid PedidoRequest> pedidos;
+    private List<@Valid PedidoResponse> pedidos;
 }

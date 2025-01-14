@@ -32,8 +32,8 @@ public class PedidoController {
     @ApiResponse(responseCode = "200", description = "Devuelve una lista con todos los pedidos")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("")
-    public ResponseEntity<List<PedidoRequest>> getAllPedidos() {
-        List<PedidoRequest> pedidos = pedidoService.getAllPedidos();
+    public ResponseEntity<List<PedidoResponse>> getAllPedidos() {
+        List<PedidoResponse> pedidos = pedidoService.getAllPedidos();
         if(pedidos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -44,7 +44,7 @@ public class PedidoController {
     @ApiResponse(responseCode = "201", description = "Devuelve el pedido añadido")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("")
-    public ResponseEntity<PedidoResponse> addPedido(@RequestBody @Valid PedidoRequest pedido) {
+    public ResponseEntity<NewPedidoResponse> addPedido(@RequestBody @Valid PedidoRequest pedido) {
         String remitente = SecurityContextHolder.getContext().getAuthentication().getName();
         return ResponseEntity.status(HttpStatus.CREATED).body(pedidoService.addPedido(remitente, pedido));
     }
