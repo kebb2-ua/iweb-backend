@@ -79,6 +79,7 @@ public class PedidoService {
             PedidoEntity pedidoFinal = pedidoRepository.save(pedidoEntity);
             return NewPedidoResponse.builder()
                     .id_envio(pedidoFinal.getId())
+                    .seguimiento(pedidoFinal.getSeguimiento())
                     .fecha_creacion(pedidoFinal.getEstado_ultima_actualizacion())
                     .build();
         } catch (NullPointerException e) {
@@ -117,8 +118,8 @@ public class PedidoService {
     }
 
     @Transactional(readOnly = true)
-    public EstadoPedidoDTO getEstadoPedido(Integer id) {
-        PedidoEntity pedido = pedidoRepository.findById(id).orElseThrow(DataNotFoundException::pedidoNotFound);
+    public EstadoPedidoDTO getEstadoPedido(String seguimiento) {
+        PedidoEntity pedido = pedidoRepository.findBySeguimiento(seguimiento).orElseThrow(DataNotFoundException::pedidoNotFound);
         return EstadoPedidoDTO.builder()
                 .estado(pedido.getEstado())
                 .estado_ultima_actualizacion(pedido.getEstado_ultima_actualizacion())

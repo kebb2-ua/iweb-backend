@@ -70,9 +70,9 @@ public class PedidoController {
     @Operation(summary = "Obtiene el estado de un pedido")
     @ApiResponse(responseCode = "200", description = "Devuelve el estado del pedido")
     @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("/estado/{id}")
-    public ResponseEntity<EstadoPedidoDTO> getEstadoPedido(@PathVariable Integer id) {
-        return ResponseEntity.ok(pedidoService.getEstadoPedido(id));
+    @GetMapping("/estado/{seguimiento}")
+    public ResponseEntity<EstadoPedidoDTO> getEstadoPedido(@PathVariable String seguimiento) {
+        return ResponseEntity.ok(pedidoService.getEstadoPedido(seguimiento));
     }
 
     @Operation(summary = "Calcula el precio de un envío")

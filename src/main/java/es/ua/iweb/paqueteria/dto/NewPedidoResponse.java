@@ -11,5 +11,6 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class NewPedidoResponse {
     private Integer id_envio;
+    private String seguimiento;
     private LocalDateTime fecha_creacion;
 }
