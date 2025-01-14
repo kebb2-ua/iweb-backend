@@ -24,14 +24,4 @@ public class TarifaController {
     public ResponseEntity<TarifaEntity> createTarifa(@RequestBody TarifaEntity tarifa) {
         return ResponseEntity.ok(tarifaService.createTarifa(tarifa));
     }
-
-    @GetMapping
-    public ResponseEntity<List<TarifaEntity>> getAllTarifas() {
-        return ResponseEntity.ok(tarifaService.getAllTarifas());
-    }
-
-    @GetMapping("/peligroso/{peligroso}")
-    public ResponseEntity<List<TarifaEntity>> getByPeligroso(@PathVariable Boolean peligroso) {
-        return ResponseEntity.ok(tarifaService.getByPeligroso(peligroso));
-    }
 }

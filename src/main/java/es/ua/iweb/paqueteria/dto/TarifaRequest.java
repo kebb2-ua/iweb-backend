@@ -12,12 +12,7 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TarifaRequest {
     @NotNull(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
-    @NotBlank(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
-    private String codigo_postal;
-
-    @NotNull(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
-    @NotBlank(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
-    private String peso;
+    private Float peso;
 
     @NotNull(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
     private Boolean peligroso;

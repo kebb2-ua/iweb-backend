@@ -5,6 +5,8 @@ import es.ua.iweb.paqueteria.entity.PedidoEntity;
 import es.ua.iweb.paqueteria.dto.*;
 
 import es.ua.iweb.paqueteria.service.PedidoService;
+import es.ua.iweb.paqueteria.service.TarifaService;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -60,6 +62,7 @@ public class PedidoController {
 
     // "pedidos/{idPedido}/asignar/{idRepartidor}": Asigna un repartidor a un pedido
     @PostMapping("/{idPedido}/asignar")
+    @Hidden
     public ResponseEntity<PedidoEntity> asignarRepartidor(@PathVariable("idPedido") String idPedido, @RequestParam("emailRepartidor") String emailRepartidor) {
         return ResponseEntity.ok(pedidoService.actualizarRepartidor(idPedido, emailRepartidor));
     }
@@ -75,8 +78,9 @@ public class PedidoController {
     @Operation(summary = "Calcula el precio de un envío")
     @ApiResponse(responseCode = "200", description = "Devuelve la tarifa del envío")
     @SecurityRequirement(name = "Bearer Authentication")
-    @PostMapping("/tarifas")
+    @GetMapping("/tarifas")
     public ResponseEntity<TarifaResponse> getTarifa(@RequestBody @Valid TarifaRequest tarifaRequest) {
-        return ResponseEntity.ok(TarifaResponse.builder().coste_estimado(9.99f).build());
+        Float coste = pedidoService.getTarifa(tarifaRequest);
+        return ResponseEntity.ok(TarifaResponse.builder().coste_estimado(coste).build());
     }
 }

@@ -1,13 +1,7 @@
 package es.ua.iweb.paqueteria.service;
 
-import es.ua.iweb.paqueteria.dto.EstadoPedidoDTO;
-import es.ua.iweb.paqueteria.dto.PedidoRequest;
-import es.ua.iweb.paqueteria.dto.NewPedidoResponse;
-import es.ua.iweb.paqueteria.dto.PedidoResponse;
-import es.ua.iweb.paqueteria.entity.BultoEntity;
-import es.ua.iweb.paqueteria.entity.DireccionValue;
-import es.ua.iweb.paqueteria.entity.PedidoEntity;
-import es.ua.iweb.paqueteria.entity.UserEntity;
+import es.ua.iweb.paqueteria.dto.*;
+import es.ua.iweb.paqueteria.entity.*;
 import es.ua.iweb.paqueteria.exception.DataNotFoundException;
 import es.ua.iweb.paqueteria.exception.MalformedObjectException;
 import es.ua.iweb.paqueteria.repository.BultoRepository;
@@ -44,10 +38,18 @@ public class PedidoService {
     @Autowired
     private final UserService userService;
 
+    @Autowired
+    private final TarifaService tarifaService;
+
     @Transactional
     public NewPedidoResponse addPedido(String email, PedidoRequest pedido) {
         try {
             UserEntity remitente = userService.getUserByEmail(email);
+
+            TarifaRequest tarifaRequest = TarifaRequest.builder()
+                    .peso(pedido.getBultos().stream().map(BultoDTO::getPeso).reduce(0f, Float::sum))
+                    .peligroso(pedido.getBultos().stream().anyMatch(BultoDTO::getPeligroso))
+                    .build();
 
             PedidoEntity pedidoEntity = pedidoRepository.save(PedidoEntity.builder()
                     .seguimiento(generarCodigoSeguimiento())
@@ -56,7 +58,7 @@ public class PedidoService {
                     .destino(DireccionValue.buildFromDTO(pedido.getDestino()))
                     .estado(EstadoType.PENDIENTE)
                     .estado_ultima_actualizacion(LocalDateTime.now())
-                    .precio(10) // todo
+                    .precio(getTarifa(tarifaRequest))
                     .observaciones(pedido.getObservaciones())
                     .build());
 
@@ -121,6 +123,14 @@ public class PedidoService {
                 .estado(pedido.getEstado())
                 .estado_ultima_actualizacion(pedido.getEstado_ultima_actualizacion())
                 .build();
+    }
+
+    public Float getTarifa(TarifaRequest tarifaRequest) {
+        TarifaEntity tarifa = tarifaService.getTarifa();
+        Float coste =   tarifa.getPrecioBase() +
+                        (tarifa.getPeso() * tarifaRequest.getPeso()) +
+                        (tarifaRequest.getPeligroso() ? tarifa.getPeligroso() : 0);
+        return Float.max(coste, tarifa.getPrecioMinimo());
     }
 
     private String generarCodigoSeguimiento() {
