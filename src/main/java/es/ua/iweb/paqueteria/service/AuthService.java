@@ -174,8 +174,8 @@ public class AuthService {
         var refreshToken = jwtService.generateRefreshToken(userEntity);
         var publicId = getPublicId();
 
-        String verificationLink = host + VERIFY_EMAIL_PATH + savedUser.getVerificationToken();
-        emailingService.sendEmail(request.getEmail(),
+        //String verificationLink = host + VERIFY_EMAIL_PATH + savedUser.getVerificationToken();
+        //emailingService.sendEmail(request.getEmail(),
                 EMAIL_SUBJECT,
                 EMAIL_TEXT.replace("{link}", verificationLink));
         saveUserSession(savedUser, accessToken, refreshToken, publicId);
