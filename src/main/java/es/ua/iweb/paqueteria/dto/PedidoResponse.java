@@ -28,4 +28,6 @@ public class PedidoResponse {
     private String seguimiento;
 
     private String observaciones;
+
+    private UserDTO repartidor;
 }

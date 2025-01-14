@@ -101,6 +101,7 @@ public class PedidoEntity {
                 .bultos(this.bultos.stream().map(BultoEntity::toDTO).toList())
                 .seguimiento(this.seguimiento)
                 .observaciones(this.observaciones)
+                .repartidor(this.repartidor != null ? this.repartidor.toDTO() : null)
                 .build();
     }
 }
