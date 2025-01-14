@@ -47,8 +47,8 @@ application:
     jwt:
       secret-key: "IZfpeGlFl5xpPTiFe4BIrfePRlsN6eciiSqaFD3uP3AlABxb6KfxJ2ibRj7gCkSBG8iBevXi2GfLtYhveqiPTQ=="
       access-token:
-        expiration: 86400000 # CAMBIAR
+        expiration: 604800000 # 7 dias
       refresh-token:
-        expiration: 2592000000 # CAMBIAR
+        expiration: 2592000000 # 30 dias
       password-reset-token:
         expiration: 3600000 # 1 hora
