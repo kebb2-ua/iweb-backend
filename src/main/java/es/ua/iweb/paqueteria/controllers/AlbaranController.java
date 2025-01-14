@@ -5,6 +5,7 @@ import es.ua.iweb.paqueteria.service.AlbaranService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -12,6 +13,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/albaranes")
+@CrossOrigin
+@PreAuthorize("hasAuthority('USER')")
 @RequiredArgsConstructor
 @Hidden
 public class AlbaranController {

@@ -5,6 +5,7 @@ import es.ua.iweb.paqueteria.service.FacturaService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @RequestMapping("/api/v1/facturas")
 @RequiredArgsConstructor
 @CrossOrigin
+@PreAuthorize("hasAuthority('USER')")
 @Hidden
 public class FacturaController {
 

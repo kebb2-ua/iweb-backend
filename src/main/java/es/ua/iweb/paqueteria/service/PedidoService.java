@@ -1,13 +1,7 @@
 package es.ua.iweb.paqueteria.service;
 
-import es.ua.iweb.paqueteria.dto.EstadoPedidoDTO;
-import es.ua.iweb.paqueteria.dto.PedidoRequest;
-import es.ua.iweb.paqueteria.dto.PedidoResponse;
-import es.ua.iweb.paqueteria.entity.BultoEntity;
-import es.ua.iweb.paqueteria.entity.DireccionValue;
-import es.ua.iweb.paqueteria.dto.EstadoResponse;
-import es.ua.iweb.paqueteria.entity.PedidoEntity;
-import es.ua.iweb.paqueteria.entity.UserEntity;
+import es.ua.iweb.paqueteria.dto.*;
+import es.ua.iweb.paqueteria.entity.*;
 import es.ua.iweb.paqueteria.exception.DataNotFoundException;
 import es.ua.iweb.paqueteria.exception.MalformedObjectException;
 import es.ua.iweb.paqueteria.repository.BultoRepository;
@@ -19,10 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -42,18 +38,27 @@ public class PedidoService {
     @Autowired
     private final UserService userService;
 
+    @Autowired
+    private final TarifaService tarifaService;
+
     @Transactional
-    public PedidoResponse addPedido(String email, PedidoRequest pedido) {
+    public NewPedidoResponse addPedido(String email, PedidoRequest pedido) {
         try {
             UserEntity remitente = userService.getUserByEmail(email);
 
+            TarifaRequest tarifaRequest = TarifaRequest.builder()
+                    .peso(pedido.getBultos().stream().map(BultoDTO::getPeso).reduce(0f, Float::sum))
+                    .peligroso(pedido.getBultos().stream().anyMatch(BultoDTO::getPeligroso))
+                    .build();
+
             PedidoEntity pedidoEntity = pedidoRepository.save(PedidoEntity.builder()
+                    .seguimiento(generarCodigoSeguimiento())
                     .remitente(remitente)
                     .origen(DireccionValue.buildFromDTO(pedido.getOrigen()))
                     .destino(DireccionValue.buildFromDTO(pedido.getDestino()))
                     .estado(EstadoType.PENDIENTE)
                     .estado_ultima_actualizacion(LocalDateTime.now())
-                    .precio(10) // todo
+                    .precio(getTarifa(tarifaRequest))
                     .observaciones(pedido.getObservaciones())
                     .build());
 
@@ -72,7 +77,7 @@ public class PedidoService {
             pedidoEntity.setBultos(bultos);
 
             PedidoEntity pedidoFinal = pedidoRepository.save(pedidoEntity);
-            return PedidoResponse.builder()
+            return NewPedidoResponse.builder()
                     .id_envio(pedidoFinal.getId())
                     .fecha_creacion(pedidoFinal.getEstado_ultima_actualizacion())
                     .build();
@@ -81,7 +86,13 @@ public class PedidoService {
         }
     }
 
-    public List<PedidoRequest> getAllPedidos() {
+    @Transactional(readOnly = true)
+    public PedidoResponse getPedido(String seguimiento) {
+        PedidoEntity pedido = pedidoRepository.findBySeguimiento(seguimiento).orElseThrow(DataNotFoundException::pedidoNotFound);
+        return pedido.toDTO();
+    }
+
+    public List<PedidoResponse> getAllPedidos() {
         return this.pedidoRepository.findAll().stream().map(PedidoEntity::toDTO).toList();
     }
 
@@ -112,5 +123,22 @@ public class PedidoService {
                 .estado(pedido.getEstado())
                 .estado_ultima_actualizacion(pedido.getEstado_ultima_actualizacion())
                 .build();
+    }
+
+    public Float getTarifa(TarifaRequest tarifaRequest) {
+        TarifaEntity tarifa = tarifaService.getTarifa();
+        Float coste =   tarifa.getPrecioBase() +
+                        (tarifa.getPeso() * tarifaRequest.getPeso()) +
+                        (tarifaRequest.getPeligroso() ? tarifa.getPeligroso() : 0);
+        return Float.max(coste, tarifa.getPrecioMinimo());
+    }
+
+    private String generarCodigoSeguimiento() {
+        String prefijo = "ENV";
+
+        String fechaActual = new SimpleDateFormat("yyyyMMdd").format(new Date());
+        String identificadorUnico = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+
+        return prefijo + "-" + fechaActual + "-" + identificadorUnico;
     }
 }

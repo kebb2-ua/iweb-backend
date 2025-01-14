@@ -20,5 +20,8 @@ public class RutaDTO {
     private Integer id;
     private UserDTO repartidor;
     private Date fecha;
-    private List<PedidoRequest> pedidos;
+
+    @NotNull(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
+    @NotEmpty(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
+    private List<@Valid PedidoResponse> pedidos;
 }

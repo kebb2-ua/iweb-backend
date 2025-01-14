@@ -1,5 +1,6 @@
 package es.ua.iweb.paqueteria.service;
 import es.ua.iweb.paqueteria.dto.PedidoRequest;
+import es.ua.iweb.paqueteria.dto.PedidoResponse;
 import es.ua.iweb.paqueteria.entity.PedidoEntity;
 import es.ua.iweb.paqueteria.repository.PedidoRepository;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ class PedidoServiceTest {
         when(pedidoRepository.findAll()).thenReturn(pedidos);
 
         // Ejecutar
-        List<PedidoRequest> result = pedidoService.getAllPedidos();
+        List<PedidoResponse> result = pedidoService.getAllPedidos();
 
         // Comprobar
         assertNotNull(result);

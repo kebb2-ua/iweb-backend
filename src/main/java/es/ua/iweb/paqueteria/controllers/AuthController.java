@@ -61,7 +61,9 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public void fakeLogout() {
-        throw new IllegalStateException("This method shouldn't be called. It's implemented by Spring Security filters.");
+    public ResponseEntity<HttpStatus> logout(@RequestHeader("Authorization") String token) {
+        authService.logout(token);
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok().build();
     }
 }

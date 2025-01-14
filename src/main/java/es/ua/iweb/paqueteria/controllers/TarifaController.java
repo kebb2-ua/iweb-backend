@@ -5,6 +5,7 @@ import es.ua.iweb.paqueteria.service.TarifaService;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @RequestMapping("/api/v1/tarifas")
 @RequiredArgsConstructor
 @CrossOrigin
+@PreAuthorize("hasAuthority('USER')")
 @Hidden
 public class TarifaController {
 
@@ -21,15 +23,5 @@ public class TarifaController {
     @PostMapping
     public ResponseEntity<TarifaEntity> createTarifa(@RequestBody TarifaEntity tarifa) {
         return ResponseEntity.ok(tarifaService.createTarifa(tarifa));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<TarifaEntity>> getAllTarifas() {
-        return ResponseEntity.ok(tarifaService.getAllTarifas());
-    }
-
-    @GetMapping("/peligroso/{peligroso}")
-    public ResponseEntity<List<TarifaEntity>> getByPeligroso(@PathVariable Boolean peligroso) {
-        return ResponseEntity.ok(tarifaService.getByPeligroso(peligroso));
     }
 }

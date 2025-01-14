@@ -16,7 +16,15 @@ public class TarifaEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
+    @Column
+    private Float precioMinimo;
+
+    @Column
+    private Float precioBase;
+
+    @Column
     private Float peso;
-    private Float distancia;
-    private Boolean peligroso;
+
+    @Column
+    private Float peligroso;
 }

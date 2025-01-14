@@ -3,6 +3,7 @@ package es.ua.iweb.paqueteria.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import es.ua.iweb.paqueteria.dto.PedidoRequest;
+import es.ua.iweb.paqueteria.dto.PedidoResponse;
 import es.ua.iweb.paqueteria.type.EstadoType;
 import es.ua.iweb.paqueteria.StringListConverter;
 import jakarta.persistence.*;
@@ -67,6 +68,9 @@ public class PedidoEntity {
     @Enumerated(EnumType.STRING)
     private EstadoType estado;
 
+    @Column(unique = true)
+    private String seguimiento;
+
     @Column
     private LocalDateTime estado_ultima_actualizacion;
 
@@ -90,12 +94,15 @@ public class PedidoEntity {
     @JsonBackReference
     private RutaEntity ruta;
 
-    public PedidoRequest toDTO() {
-        return PedidoRequest.builder()
+    public PedidoResponse toDTO() {
+        return PedidoResponse.builder()
                 .origen(this.origen != null ? this.origen.toDTO() : null)
                 .destino(this.destino != null ? this.destino.toDTO() : null)
                 .bultos(this.bultos.stream().map(BultoEntity::toDTO).toList())
+                .seguimiento(this.seguimiento)
+                .estado(this.estado)
                 .observaciones(this.observaciones)
+                .repartidor(this.repartidor != null ? this.repartidor.toDTO() : null)
                 .build();
     }
 }
