@@ -2,7 +2,6 @@ package es.ua.iweb.paqueteria.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import es.ua.iweb.paqueteria.constants.ErrorMessages;
-import es.ua.iweb.paqueteria.entity.RutaEntity;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -11,17 +10,24 @@ import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RutaDTO {
+public class PedidoDTO {
     private Integer id;
-    private UserDTO repartidor;
-    private Date fecha;
+
+    @NotNull(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
+    @Valid
+    private DireccionDTO origen;
+
+    @NotNull(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
+    @Valid
+    private DireccionDTO destino;
 
     @NotNull(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
     @NotEmpty(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
-    private List<@Valid PedidoResponse> pedidos;
+    private List<@Valid BultoDTO> bultos;
+
+    private String observaciones;
 }
