@@ -68,7 +68,7 @@ public class PedidoEntity {
     @Enumerated(EnumType.STRING)
     private EstadoType estado;
 
-    @Column
+    @Column(unique = true)
     private String seguimiento;
 
     @Column

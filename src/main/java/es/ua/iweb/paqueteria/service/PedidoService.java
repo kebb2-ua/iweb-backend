@@ -84,6 +84,12 @@ public class PedidoService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public PedidoResponse getPedido(String seguimiento) {
+        PedidoEntity pedido = pedidoRepository.findBySeguimiento(seguimiento).orElseThrow(DataNotFoundException::pedidoNotFound);
+        return pedido.toDTO();
+    }
+
     public List<PedidoResponse> getAllPedidos() {
         return this.pedidoRepository.findAll().stream().map(PedidoEntity::toDTO).toList();
     }

@@ -49,6 +49,14 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(pedidoService.addPedido(remitente, pedido));
     }
 
+    @Operation(summary = "Obtiene un pedido por su número de seguimiento")
+    @ApiResponse(responseCode = "200", description = "Devuelve el pedido")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping("/{seguimiento}")
+    public ResponseEntity<PedidoResponse> getPedidoBySeguimiento(@PathVariable String seguimiento) {
+        return ResponseEntity.ok(pedidoService.getPedido(seguimiento));
+    }
+
 
     // "pedidos/{idPedido}/asignar/{idRepartidor}": Asigna un repartidor a un pedido
     @PostMapping("/{idPedido}/asignar")
