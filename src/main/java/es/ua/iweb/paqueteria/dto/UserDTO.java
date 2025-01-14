@@ -1,7 +1,7 @@
 package es.ua.iweb.paqueteria.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import es.ua.iweb.paqueteria.entity.DireccionValue;
+import es.ua.iweb.paqueteria.entity.UserEntity;
 import es.ua.iweb.paqueteria.type.AccountStatusType;
 import es.ua.iweb.paqueteria.type.RoleType;
 import lombok.Builder;
@@ -23,4 +23,19 @@ public class UserDTO {
     private ZonaDTO zona;
     private List<RoleType> rolesList;
     private AccountStatusType accountStatusType;
+
+    public static UserDTO buildFromEntity(UserEntity userEntity) {
+        return UserDTO.builder()
+                .id(userEntity.getId())
+                .nif(userEntity.getNif())
+                .nombre(userEntity.getNombre())
+                .apellidos(userEntity.getApellidos())
+                .razonSocial(userEntity.getRazonSocial())
+                .email(userEntity.getEmail())
+                .direccion(userEntity.getDireccion().toDTO())
+                .zona(userEntity.getZona().toDTO())
+                .rolesList(userEntity.getRolesList())
+                .accountStatusType(userEntity.getAccountStatusType())
+                .build();
+    }
 }
