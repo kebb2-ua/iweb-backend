@@ -32,8 +32,8 @@ public class UserDTO {
                 .apellidos(userEntity.getApellidos())
                 .razonSocial(userEntity.getRazonSocial())
                 .email(userEntity.getEmail())
-                .direccion(userEntity.getDireccion().toDTO())
-                .zona(userEntity.getZona().toDTO())
+                .direccion(userEntity.getDireccion() != null ? userEntity.getDireccion().toDTO() : null)
+                .zona(userEntity.getZona() != null ? userEntity.getZona().toDTO() : null)
                 .rolesList(userEntity.getRolesList())
                 .accountStatusType(userEntity.getAccountStatusType())
                 .build();
