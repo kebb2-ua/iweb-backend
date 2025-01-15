@@ -75,10 +75,13 @@ public class PedidoController {
 
 
     // "pedidos/{idPedido}/asignar/{idRepartidor}": Asigna un repartidor a un pedido
-    @PostMapping("/{idPedido}/asignar")
+    @Operation(summary = "Asigna un repartidor a un pedido")
+    @ApiResponse(responseCode = "200", description = "Devuelve el pedido con el repartidor asignado")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PostMapping("/{nSeguimiento}/asignar")
     @Hidden
-    public ResponseEntity<PedidoEntity> asignarRepartidor(@PathVariable("idPedido") String idPedido, @RequestParam("emailRepartidor") String emailRepartidor) {
-        return ResponseEntity.ok(pedidoService.actualizarRepartidor(idPedido, emailRepartidor));
+    public ResponseEntity<PedidoResponse> asignarRepartidor(@PathVariable("nSeguimiento") String nSeguimiento, @RequestParam("emailRepartidor") String emailRepartidor) {
+        return ResponseEntity.ok(pedidoService.actualizarRepartidor(nSeguimiento, emailRepartidor));
     }
 
     @Operation(summary = "Obtiene el estado de un pedido")

@@ -114,16 +114,19 @@ public class PedidoService {
     public List<PedidoEntity> getPedidosByRutaId(Integer rutaId){ return pedidoRepository.findByRutaId(rutaId); }
 
     @Transactional
-    public PedidoEntity actualizarRepartidor(String idPedido, String emailRepartidor) {
-        Optional<PedidoEntity> optionalPedido = pedidoRepository.findById(Integer.parseInt(idPedido));
+    public PedidoResponse actualizarRepartidor(String nSeguimiento, String emailRepartidor) {
+        Optional<PedidoEntity> optionalPedido = pedidoRepository.findBySeguimiento(nSeguimiento);
         UserEntity repartidor = userService.getUserByEmail(emailRepartidor);
 
         if (optionalPedido.isPresent() && repartidor != null) {
             PedidoEntity pedido = optionalPedido.get();
             pedido.setRepartidor(repartidor);
-            return pedidoRepository.save(pedido);
+
+            return pedidoRepository.save(pedido).toDTO();
+
+
         } else {
-            throw new IllegalArgumentException("Pedido con ID " + idPedido + " no encontrado o repartidor con email " + emailRepartidor + " no encontrado .");
+            throw new IllegalArgumentException("Pedido con ID " + nSeguimiento + " no encontrado o repartidor con email " + emailRepartidor + " no encontrado .");
         }
     }
 
