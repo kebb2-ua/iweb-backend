@@ -84,8 +84,8 @@ public class AuthController {
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Map<String, String>> createApiKey() {
         UserEntity userEntity = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String jwt = authService.createApiKey(userEntity);
-        return ResponseEntity.ok(Map.of("jwt", jwt));
+        Map<String, String> response = authService.createApiKey(userEntity);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/apikey/delete")
