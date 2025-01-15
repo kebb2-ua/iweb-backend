@@ -91,7 +91,6 @@ public class AuthController {
     @PostMapping("/apikey/delete")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<HttpStatus> deleteApiKey(@RequestBody @Valid ApiKeyDTO apiKeyDTO) {
-        UserEntity userEntity = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         authService.deleteApiKey(apiKeyDTO.getPublicId());
         return ResponseEntity.ok().build();
     }
