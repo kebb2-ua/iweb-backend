@@ -1,10 +1,10 @@
 package es.ua.iweb.paqueteria.service;
 
-import es.ua.iweb.paqueteria.dto.RutaDTO;
 import es.ua.iweb.paqueteria.dto.RutaRequest;
 import es.ua.iweb.paqueteria.entity.PedidoEntity;
 import es.ua.iweb.paqueteria.entity.RutaEntity;
 import es.ua.iweb.paqueteria.entity.UserEntity;
+import es.ua.iweb.paqueteria.repository.PedidoRepository;
 import es.ua.iweb.paqueteria.repository.RutaRepository;
 import es.ua.iweb.paqueteria.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +21,10 @@ public class RutaService {
     private final PedidoService pedidoService;
 
     private final UserService userService;
+
+    private final UserRepository userRepository;
+
+    private final PedidoRepository pedidoRepository;
 
 
     public RutaEntity addRuta(RutaRequest ruta) {
@@ -49,11 +52,14 @@ public class RutaService {
                 .orElseThrow(() -> new RuntimeException("Ruta no encontrada con ID: " + id));
     }
 
-    public RutaEntity updateRuta(Integer id, RutaRequest rutaDetails) {
-        RutaEntity ruta = getRutaById(id);
-        UserEntity repartidor = userService.getUserById(rutaDetails.getRepartidorId());
-        ruta.setFecha(rutaDetails.getFecha());
-        ruta.setRepartidor(repartidor);
+    public RutaEntity asignarPedido(Integer idRuta, Integer idPedido) {
+        RutaEntity ruta = rutaRepository.findById(idRuta)
+                .orElseThrow(() -> new RuntimeException("Ruta no encontrada con ID: " + idRuta));
+
+        PedidoEntity pedido = pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado con ID: " + idPedido));
+
+        ruta.getPedidos().add(pedido);
         return rutaRepository.save(ruta);
     }
 
@@ -64,6 +70,12 @@ public class RutaService {
 
     public List<RutaEntity> getRutasByRepartidor(Integer repartidorId) {
         return rutaRepository.findByRepartidorId(repartidorId);
+    }
+
+    public Integer getRepartidorIdByEmail(String email) {
+        UserEntity repartidor = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Repartidor no encontrado con el email: " + email));
+        return repartidor.getId();
     }
 
     public List<RutaEntity> getRutasByFecha(Date fecha) {

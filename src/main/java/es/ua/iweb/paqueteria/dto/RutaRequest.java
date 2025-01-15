@@ -17,7 +17,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RutaRequest {
     @NotNull(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
-    @NotBlank(message = ErrorMessages.FIELD_CANNOT_BE_BLANK)
     @Valid
     private Integer repartidorId;
 

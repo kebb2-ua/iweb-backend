@@ -3,53 +3,80 @@ package es.ua.iweb.paqueteria.controllers;
 import es.ua.iweb.paqueteria.dto.*;
 import es.ua.iweb.paqueteria.entity.*;
 import es.ua.iweb.paqueteria.service.RutaService;
-import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/rutas")
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('USER')")
 @CrossOrigin
-@Hidden
 public class RutaController {
 
     private final RutaService rutaService;
 
+    @Operation(summary = "Añade una nueva ruta")
+    @ApiResponse(responseCode = "201", description = "Devuelve la ruta añadida")
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
-    public ResponseEntity<RutaEntity> createRuta(@RequestBody RutaRequest ruta) {
-        return ResponseEntity.ok(rutaService.addRuta(ruta));
+    public ResponseEntity<RutaResponse> createRuta(@RequestBody @Valid RutaRequest ruta) {
+        RutaEntity nuevaRuta = rutaService.addRuta(ruta);
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapToRutaResponse(nuevaRuta));
     }
 
+    @Operation(summary = "Obtiene todas las rutas")
+    @ApiResponse(responseCode = "200", description = "Devuelve una lista de rutas")
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping
-    public ResponseEntity<List<RutaEntity>> getAllRutas() {
-        return ResponseEntity.ok(rutaService.getAllRutas());
+    public ResponseEntity<List<RutaResponse>> getAllRutas() {
+        List<RutaResponse> rutas = rutaService.getAllRutas().stream()
+                .map(this::mapToRutaResponse)
+                .collect(Collectors.toList());
+        return rutas.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(rutas);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<RutaEntity> getRutaById(@PathVariable Integer id) {
-        return ResponseEntity.ok(rutaService.getRutaById(id));
+    @Operation(summary = "Obtiene las rutas asignadas al repartidor actual")
+    @ApiResponse(responseCode = "200", description = "Devuelve las rutas del usuario")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping("/owned")
+    public ResponseEntity<List<RutaResponse>> getUserRutas() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Integer repartidorId = rutaService.getRepartidorIdByEmail(email);
+
+        List<RutaResponse> rutas = rutaService.getRutasByRepartidor(repartidorId).stream()
+                .map(this::mapToRutaResponse)
+                .collect(Collectors.toList());
+
+        return rutas.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(rutas);
     }
 
+    @Operation(summary = "Asigna un pedido a una ruta")
+    @ApiResponse(responseCode = "200", description = "Devuelve la ruta con el pedido asignado")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PostMapping("/{idRuta}/asignar")
+    public ResponseEntity<RutaResponse> asignarPedido(@PathVariable Integer idRuta, @RequestParam Integer idPedido) {
+        RutaEntity rutaActualizada = rutaService.asignarPedido(idRuta, idPedido);
+        return ResponseEntity.ok(mapToRutaResponse(rutaActualizada));
+    }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<RutaResponse> updateRuta(@PathVariable Integer id, @RequestBody RutaRequest rutaRequest) {
-        RutaEntity updatedRutaEntity = rutaService.updateRuta(id, rutaRequest);
-
-        RutaResponse rutaResponse = RutaResponse.builder()
-                .id(updatedRutaEntity.getId())
-                .repartidor(mapToUserDTO(updatedRutaEntity.getRepartidor()))
-                .fecha(updatedRutaEntity.getFecha())
-                .pedidos(updatedRutaEntity.getPedidos() != null ? updatedRutaEntity.getPedidos().stream().map(this::mapToPedidoRequest).collect(Collectors.toList()) : null)
+    private RutaResponse mapToRutaResponse(RutaEntity rutaEntity) {
+        return RutaResponse.builder()
+                .id(rutaEntity.getId())
+                .repartidor(mapToUserDTO(rutaEntity.getRepartidor()))
+                .fecha(rutaEntity.getFecha())
+                .pedidos(rutaEntity.getPedidos() != null ? rutaEntity.getPedidos().stream().map(this::mapToPedidoRequest).collect(Collectors.toList()) : null)
                 .build();
-
-        return ResponseEntity.ok(rutaResponse);
     }
 
     private UserDTO mapToUserDTO(UserEntity userEntity) {
@@ -70,29 +97,5 @@ public class RutaController {
                 .bultos(pedidoEntity.getBultos() != null ? pedidoEntity.getBultos().stream().map(BultoEntity::toDTO).collect(Collectors.toList()) : null)
                 .observaciones(pedidoEntity.getObservaciones())
                 .build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRuta(@PathVariable Integer id) {
-        rutaService.deleteRuta(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/repartidor/{id}")
-    public ResponseEntity<List<RutaEntity>> getRutasByRepartidor(@PathVariable Integer id) {
-        return ResponseEntity.ok(rutaService.getRutasByRepartidor(id));
-    }
-
-    @GetMapping("/fecha")
-    public ResponseEntity<List<RutaEntity>> getRutasByFecha(@RequestParam Date fecha) {
-        // Limpiar las horas de la fecha para que no se tengan en cuenta
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(fecha);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        Date fechaSinHora = calendar.getTime();
-        return ResponseEntity.ok(rutaService.getRutasByFecha(fechaSinHora));
     }
 }
