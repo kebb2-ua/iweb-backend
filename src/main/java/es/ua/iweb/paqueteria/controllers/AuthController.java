@@ -1,5 +1,6 @@
 package es.ua.iweb.paqueteria.controllers;
 
+import es.ua.iweb.paqueteria.dto.ApiKeyDTO;
 import es.ua.iweb.paqueteria.dto.AuthenticationResponse;
 import es.ua.iweb.paqueteria.dto.LoginRequest;
 import es.ua.iweb.paqueteria.dto.RegisterRequest;
@@ -14,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -69,11 +73,26 @@ public class AuthController {
 
     /* API ENDPOINTS */
 
-    /*@PostMapping("/apikey/create")
+    @GetMapping("/apikey")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<HttpStatus> createApiKey() {
+    public ResponseEntity<List<ApiKeyDTO>> getApiKey() {
         UserEntity userEntity = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        authService.createApiKey(userEntity);
+        return ResponseEntity.ok(authService.getAllUserApiKeys(userEntity));
+    }
+
+    @PostMapping("/apikey/create")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<Map<String, String>> createApiKey() {
+        UserEntity userEntity = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String jwt = authService.createApiKey(userEntity);
+        return ResponseEntity.ok(Map.of("jwt", jwt));
+    }
+
+    @PostMapping("/apikey/delete")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<HttpStatus> deleteApiKey(@RequestBody @Valid ApiKeyDTO apiKeyDTO) {
+        UserEntity userEntity = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        authService.deleteApiKey(apiKeyDTO.getPublicId());
         return ResponseEntity.ok().build();
-    }*/ // todo
+    }
 }

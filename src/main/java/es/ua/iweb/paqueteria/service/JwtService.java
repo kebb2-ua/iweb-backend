@@ -81,11 +81,19 @@ public class JwtService {
     }
 
     public String generateAccessToken(UserDetails userDetails) {
-        return buildToken(new HashMap<>(), userDetails, accessTokenExpiration);
+        return generateAccessToken(userDetails, false);
+    }
+
+    public String generateAccessToken(UserDetails userDetails, boolean apiKey) {
+        return buildToken(new HashMap<>(), userDetails, apiKey ? 0 : accessTokenExpiration);
     }
 
     public String generateRefreshToken(UserDetails userDetails) {
-        return buildToken(new HashMap<>(), userDetails, refreshTokenExpiration);
+        return generateRefreshToken(userDetails, false);
+    }
+
+    public String generateRefreshToken(UserDetails userDetails, boolean apiKey) {
+        return buildToken(new HashMap<>(), userDetails, apiKey ? 0 : refreshTokenExpiration);
     }
 
     public String generatePasswordResetToken(UserDetails userDetails, Integer passwordTokenExpiration) {

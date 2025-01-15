@@ -1,5 +1,6 @@
 package es.ua.iweb.paqueteria.service;
 
+import es.ua.iweb.paqueteria.dto.ApiKeyDTO;
 import es.ua.iweb.paqueteria.dto.AuthenticationResponse;
 import es.ua.iweb.paqueteria.dto.LoginRequest;
 import es.ua.iweb.paqueteria.dto.RegisterRequest;
@@ -188,6 +189,36 @@ public class AuthService {
     }
 
     @Transactional
+    public String createApiKey(UserEntity userEntity) {
+        var accessToken = jwtService.generateAccessToken(userEntity, true);
+        var refreshToken = jwtService.generateRefreshToken(userEntity, true);
+        var publicId = getPublicId();
+
+        String jwt = jwtService.generateJWT(userEntity, accessToken, refreshToken, publicId);
+
+        SessionEntity session = SessionEntity.builder()
+                .user(userEntity)
+                .publicId(publicId)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken) // después será ignorado, necesario para CREARLO
+                .tokenType(TokenType.BEARER)
+                .isApiKey(true)
+                .build();
+        sessionRepository.save(session);
+
+        return jwt;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ApiKeyDTO> getAllUserApiKeys(UserEntity userEntity) {
+        List<ApiKeyDTO> apiKeyDTOList = new ArrayList<>();
+        sessionRepository.findByUserAndIsApiKeyTrue(userEntity).forEach(
+                sessionEntity -> apiKeyDTOList.add(ApiKeyDTO.builder().publicId(sessionEntity.getPublicId()).build())
+        );
+        return apiKeyDTOList;
+    }
+
+    @Transactional
     @Modifying
     public void verifyEmailByToken(String token) {
         UserEntity userEntity = userRepository.findByVerificationToken(token).orElseThrow(UnauthorizedException::notAuthorized);
@@ -231,6 +262,11 @@ public class AuthService {
                 .jwt(jwt)
                 .user(userEntity.toDTO())
                 .build();
+    }
+
+    @Transactional
+    public void deleteApiKey(String publicId) {
+        sessionRepository.deleteByPublicId(publicId);
     }
 
     private UserEntity saveCredentials(UserEntity userEntity) {
