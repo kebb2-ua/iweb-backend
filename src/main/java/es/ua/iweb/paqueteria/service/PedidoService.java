@@ -97,6 +97,11 @@ public class PedidoService {
         return this.pedidoRepository.findAll().stream().map(PedidoEntity::toDTO).toList();
     }
 
+    public List<PedidoResponse> getPedidosByUsuario(String email) {
+        UserEntity user = userService.getUserByEmail(email);
+        return pedidoRepository.findByRemitenteId(user.getId()).stream().map(PedidoEntity::toDTO).toList();
+    }
+
     public List<PedidoEntity> getPedidosByRepartidor(Integer repartidorId) {
         return pedidoRepository.findByRepartidorId(repartidorId);
     }

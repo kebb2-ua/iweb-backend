@@ -42,6 +42,20 @@ public class PedidoController {
         return ResponseEntity.ok(pedidos);
     }
 
+    @Operation(summary = "Obtiene todos los pedidos del usuario actual")
+    @ApiResponse(responseCode = "200", description = "Devuelve una lista con todos los pedidos del usuario actual")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping("/owned")
+    public ResponseEntity<List<PedidoResponse>> getUserPedidos() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<PedidoResponse> pedidos = pedidoService.getPedidosByUsuario(email);
+
+        if(pedidos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(pedidos);
+    }
+
     @Operation(summary = "Añade un pedido")
     @ApiResponse(responseCode = "201", description = "Devuelve el pedido añadido")
     @SecurityRequirement(name = "Bearer Authentication")

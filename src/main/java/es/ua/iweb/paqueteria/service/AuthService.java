@@ -183,6 +183,7 @@ public class AuthService {
         var jwt = jwtService.generateJWT(userEntity, accessToken, refreshToken, publicId);
         return AuthenticationResponse.builder()
                 .jwt(jwt)
+                .user(savedUser.toDTO())
                 .build();
     }
 
@@ -228,6 +229,7 @@ public class AuthService {
 
         return AuthenticationResponse.builder()
                 .jwt(jwt)
+                .user(userEntity.toDTO())
                 .build();
     }
 

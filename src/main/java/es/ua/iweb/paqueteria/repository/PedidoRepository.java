@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PedidoRepository extends JpaRepository<PedidoEntity, Integer>{
+public interface PedidoRepository extends JpaRepository<PedidoEntity, Integer> {
+    List<PedidoEntity> findByRemitenteId(Integer remitenteId);
     List<PedidoEntity> findByRepartidorId(Integer repartidorId);
     List<PedidoEntity> findByRutaId(Integer rutaId);
     Optional<PedidoEntity> findBySeguimiento(String seguimiento);
