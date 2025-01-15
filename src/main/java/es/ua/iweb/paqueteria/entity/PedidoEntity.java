@@ -94,6 +94,10 @@ public class PedidoEntity {
     @JsonBackReference
     private RutaEntity ruta;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "pago_id")
+    private PagoEntity pago;
+
     public PedidoResponse toDTO() {
         return PedidoResponse.builder()
                 .origen(this.origen != null ? this.origen.toDTO() : null)
@@ -103,6 +107,7 @@ public class PedidoEntity {
                 .estado(this.estado)
                 .observaciones(this.observaciones)
                 .repartidor(this.repartidor != null ? this.repartidor.toDTO() : null)
+                .estadoPago(this.pago != null ? this.pago.getEstado() : null)
                 .build();
     }
 }

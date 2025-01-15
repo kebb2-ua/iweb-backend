@@ -10,15 +10,13 @@ import es.ua.iweb.paqueteria.type.EstadoType;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +38,9 @@ public class PedidoService {
 
     @Autowired
     private final TarifaService tarifaService;
+
+    @Autowired
+    private final PagosService pagosService;
 
     @Transactional
     public NewPedidoResponse addPedido(String email, PedidoRequest pedido) {
@@ -77,6 +78,10 @@ public class PedidoService {
             pedidoEntity.setBultos(bultos);
 
             PedidoEntity pedidoFinal = pedidoRepository.save(pedidoEntity);
+
+            // Generamos la entidad PAGO
+            pagosService.crearPago(pedidoFinal);
+
             return NewPedidoResponse.builder()
                     .id_envio(pedidoFinal.getId())
                     .seguimiento(pedidoFinal.getSeguimiento())
@@ -137,6 +142,12 @@ public class PedidoService {
                         (tarifa.getPeso() * tarifaRequest.getPeso()) +
                         (tarifaRequest.getPeligroso() ? tarifa.getPeligroso() : 0);
         return Float.max(coste, tarifa.getPrecioMinimo());
+    }
+
+    // Devuelve { "url": "string" }
+    public Map<String, String> generarPago(String seguimiento) {
+        PedidoEntity pedido = pedidoRepository.findBySeguimiento(seguimiento).orElseThrow(DataNotFoundException::pedidoNotFound);
+        return pagosService.crearPago(pedido);
     }
 
     private String generarCodigoSeguimiento() {

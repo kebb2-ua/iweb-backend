@@ -66,4 +66,14 @@ public class AuthController {
         SecurityContextHolder.clearContext();
         return ResponseEntity.ok().build();
     }
+
+    /* API ENDPOINTS */
+
+    /*@PostMapping("/apikey/create")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<HttpStatus> createApiKey() {
+        UserEntity userEntity = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        authService.createApiKey(userEntity);
+        return ResponseEntity.ok().build();
+    }*/ // todo
 }

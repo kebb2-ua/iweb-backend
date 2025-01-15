@@ -6,6 +6,7 @@ public class DataNotFoundException extends SHSRuntimeException {
     public static String USER_NOT_FOUND_KEY = "DATA_NOT_FOUND.USER";
     public static String TOKEN_NOT_FOUND_KEY = "DATA_NOT_FOUND.TOKEN";
     public static String PEDIDO_NOT_FOUND = "DATA_NOT_FOUND.PEDIDO";
+    public static String PAGO_NOT_FOUND = "DATA_NOT_FOUND.PAGO";
 
     public DataNotFoundException(String message, String translationKey) {
         super(message, translationKey);
@@ -21,5 +22,9 @@ public class DataNotFoundException extends SHSRuntimeException {
 
     public static DataNotFoundException pedidoNotFound() {
         return new DataNotFoundException(ErrorMessages.PEDIDO_NOT_FOUND, PEDIDO_NOT_FOUND);
+    }
+
+    public static DataNotFoundException pagoNotFound() {
+        return new DataNotFoundException(ErrorMessages.PAGO_NOT_FOUND, PAGO_NOT_FOUND);
     }
 }

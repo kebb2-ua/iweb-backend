@@ -43,6 +43,8 @@ springdoc:
 application:
   name: "Paquetería"
   host: http://localhost:8080
+  greenSys:
+    apiKey: "sk_hqkhqzzgpum5xn45xt"
   security:
     jwt:
       secret-key: "IZfpeGlFl5xpPTiFe4BIrfePRlsN6eciiSqaFD3uP3AlABxb6KfxJ2ibRj7gCkSBG8iBevXi2GfLtYhveqiPTQ=="

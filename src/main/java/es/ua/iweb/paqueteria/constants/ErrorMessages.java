@@ -8,6 +8,7 @@ public final class ErrorMessages {
     public static final String INVALID_PASSWORD_FORMAT = "%s field must contain at least one number, one capital letter, one lowercase letter and must be at least 8 characters long";
     public static final String INVALID_EMAIL = "%s must be a correctly formatted email address";
     public static final String USER_NOT_FOUND = "User not found";
+    public static final String PAGO_NOT_FOUND = "Pago not found";
     public static final String EMAIL_IS_REGISTERED = "Email is already registered.";
     public static final String EMAIL_IS_VERIFIED = "Email is already verified.";
     public static final String NIF_IS_REGISTERED = "NIF is already registered.";
@@ -22,4 +23,5 @@ public final class ErrorMessages {
     public static final String INTERNAL_SERVER_ERROR = "Internal server error";
     public static final String RESOURCE_NOT_FOUND = "Resource not found";
     public static final String METHOD_NOT_ALLOWED = "Method not allowed";
+    public static final String PAYMENT_ALREADY_ACCEPTED = "Payment already accepted";
 }

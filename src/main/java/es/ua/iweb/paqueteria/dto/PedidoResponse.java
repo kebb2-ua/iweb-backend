@@ -32,5 +32,7 @@ public class PedidoResponse {
 
     private String observaciones;
 
+    private EstadoType estadoPago;
+
     private UserDTO repartidor;
 }
