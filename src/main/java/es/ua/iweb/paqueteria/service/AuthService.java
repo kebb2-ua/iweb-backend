@@ -18,10 +18,8 @@ import es.ua.iweb.paqueteria.type.RoleType;
 import es.ua.iweb.paqueteria.type.TokenType;
 import java.security.SecureRandom;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -189,7 +187,7 @@ public class AuthService {
     }
 
     @Transactional
-    public String createApiKey(UserEntity userEntity) {
+    public Map<String, String> createApiKey(UserEntity userEntity) {
         var accessToken = jwtService.generateAccessToken(userEntity, true);
         var refreshToken = jwtService.generateRefreshToken(userEntity, true);
         var publicId = getPublicId();
@@ -206,7 +204,11 @@ public class AuthService {
                 .build();
         sessionRepository.save(session);
 
-        return jwt;
+        Map<String, String> response = new HashMap<>();
+        response.put("jwt", jwt);
+        response.put("publicId", publicId);
+
+        return response;
     }
 
     @Transactional(readOnly = true)
