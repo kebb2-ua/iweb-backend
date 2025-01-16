@@ -2,7 +2,6 @@ package es.ua.iweb.paqueteria.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import es.ua.iweb.paqueteria.constants.ErrorMessages;
-import es.ua.iweb.paqueteria.entity.RutaEntity;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +10,6 @@ import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @Builder
