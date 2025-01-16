@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/api/v1/facturas")
 @RequiredArgsConstructor
 @CrossOrigin
-@PreAuthorize("hasAuthority('USER')")
+@PreAuthorize("hasAuthority('ADMIN')")
 @Hidden
 public class FacturaController {
 

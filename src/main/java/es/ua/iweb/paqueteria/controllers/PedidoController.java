@@ -1,11 +1,9 @@
 package es.ua.iweb.paqueteria.controllers;
 
 
-import es.ua.iweb.paqueteria.entity.PedidoEntity;
 import es.ua.iweb.paqueteria.dto.*;
 
 import es.ua.iweb.paqueteria.service.PedidoService;
-import es.ua.iweb.paqueteria.service.TarifaService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

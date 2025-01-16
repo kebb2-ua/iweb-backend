@@ -29,6 +29,7 @@ public class RutaController {
     @Operation(summary = "Añade una nueva ruta")
     @ApiResponse(responseCode = "201", description = "Devuelve la ruta añadida")
     @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity<RutaResponse> createRuta(@RequestBody @Valid RutaRequest ruta) {
         RutaEntity nuevaRuta = rutaService.addRuta(ruta);
@@ -38,6 +39,7 @@ public class RutaController {
     @Operation(summary = "Obtiene todas las rutas")
     @ApiResponse(responseCode = "200", description = "Devuelve una lista de rutas")
     @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public ResponseEntity<List<RutaResponse>> getAllRutas() {
         List<RutaResponse> rutas = rutaService.getAllRutas().stream()
@@ -64,6 +66,7 @@ public class RutaController {
     @Operation(summary = "Asigna un pedido a una ruta")
     @ApiResponse(responseCode = "200", description = "Devuelve la ruta con el pedido asignado")
     @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/{idRuta}/asignar")
     public ResponseEntity<RutaResponse> asignarPedido(@PathVariable Integer idRuta, @RequestParam Integer idPedido) {
         RutaEntity rutaActualizada = rutaService.asignarPedido(idRuta, idPedido);

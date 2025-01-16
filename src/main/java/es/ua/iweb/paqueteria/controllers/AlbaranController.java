@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/albaranes")
 @CrossOrigin
-@PreAuthorize("hasAuthority('USER')")
+@PreAuthorize("hasAuthority('ADMIN')")
 @RequiredArgsConstructor
 @Hidden
 public class AlbaranController {
