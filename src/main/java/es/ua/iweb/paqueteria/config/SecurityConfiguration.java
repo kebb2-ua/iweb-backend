@@ -49,7 +49,7 @@ public class SecurityConfiguration {
     static RoleHierarchy roleHierarchy() {
         var hierarchy = new RoleHierarchyImpl();
         hierarchy.setHierarchy("""
-        ADMIN > USER
+        ADMIN > REPARTIDOR > USER
         """);
         return hierarchy;
     }
