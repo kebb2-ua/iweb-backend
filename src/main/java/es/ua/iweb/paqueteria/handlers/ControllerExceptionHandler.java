@@ -6,6 +6,7 @@ import es.ua.iweb.paqueteria.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -27,6 +28,7 @@ public class ControllerExceptionHandler {
     private final static String RESOURCE_NOT_FOUND = "RESOURCE_NOT_FOUND";
     private final static String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
     private final static String METHOD_NOT_ALLOWED = "METHOD_NOT_ALLOWED";
+    private final static String FORBIDDEN = "FORBIDDEN";
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -92,6 +94,12 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public List<ErrorResponse> handleHttpRequestMethodNotSupportedException(final HttpRequestMethodNotSupportedException ex) {
         return List.of(ErrorResponse.of(ErrorMessages.METHOD_NOT_ALLOWED, METHOD_NOT_ALLOWED));
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public List<ErrorResponse> handleAuthorizationDeniedException(final AuthorizationDeniedException ex) {
+        return List.of(ErrorResponse.of(ErrorMessages.FORBIDDEN, FORBIDDEN));
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

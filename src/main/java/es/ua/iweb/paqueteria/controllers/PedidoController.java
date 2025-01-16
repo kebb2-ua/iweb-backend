@@ -32,6 +32,7 @@ public class PedidoController {
     @ApiResponse(responseCode = "200", description = "Devuelve una lista con todos los pedidos")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<PedidoResponse>> getAllPedidos() {
         List<PedidoResponse> pedidos = pedidoService.getAllPedidos();
         if(pedidos.isEmpty()) {
@@ -77,6 +78,7 @@ public class PedidoController {
     @ApiResponse(responseCode = "200", description = "Devuelve el pedido con el repartidor asignado")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{nSeguimiento}/asignar")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Hidden
     public ResponseEntity<PedidoResponse> asignarRepartidor(@PathVariable("nSeguimiento") String nSeguimiento, @RequestParam("emailRepartidor") String emailRepartidor) {
         return ResponseEntity.ok(pedidoService.actualizarRepartidor(nSeguimiento, emailRepartidor));
@@ -103,6 +105,8 @@ public class PedidoController {
     @ApiResponse(responseCode = "200", description = "Devuelve el pedido con el estado modificado")
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{seguimiento}/estado")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'REPARTIDOR')")
+    @Hidden
     public ResponseEntity<PedidoResponse> actualizarEstadoPedido(@PathVariable String seguimiento, @RequestBody @Valid EstadoPedidoRequest estado) {
         return ResponseEntity.ok(pedidoService.actualizarEstadoPedido(seguimiento, estado));
     }
