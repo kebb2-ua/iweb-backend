@@ -108,6 +108,7 @@ public class PedidoEntity {
                 .observaciones(this.observaciones)
                 .repartidor(this.repartidor != null ? this.repartidor.toDTO() : null)
                 .estadoPago(this.pago != null ? this.pago.getEstado() : null)
+                .estado_ultima_actualizacion(this.estado_ultima_actualizacion != null ? this.estado_ultima_actualizacion : null)
                 .build();
     }
 }
