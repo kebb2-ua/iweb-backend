@@ -4,6 +4,7 @@ import es.ua.iweb.paqueteria.dto.RutaRequest;
 import es.ua.iweb.paqueteria.entity.PedidoEntity;
 import es.ua.iweb.paqueteria.entity.RutaEntity;
 import es.ua.iweb.paqueteria.entity.UserEntity;
+import es.ua.iweb.paqueteria.exception.DataNotFoundException;
 import es.ua.iweb.paqueteria.repository.PedidoRepository;
 import es.ua.iweb.paqueteria.repository.RutaRepository;
 import es.ua.iweb.paqueteria.repository.UserRepository;
@@ -104,6 +105,34 @@ public class RutaService {
 
     private int getDate(Date date) {
         return date.getDate();
+    }
+
+    public Integer obtenerIdRutaPorEmailYFecha(String emailRepartidor) {
+        UserEntity repartidor = userService.getUserByEmail(emailRepartidor);
+        Integer idRepartidor = repartidor.getId();
+        Date fechaActual = new Date();
+
+        List<RutaEntity> rutas = rutaRepository.findByRepartidorId(idRepartidor).stream()
+                .filter(ruta -> {
+                    Date fechaRuta = ruta.getFecha();
+                    return getYear(fechaRuta) == getYear(fechaActual) &&
+                            getMonth(fechaRuta) == getMonth(fechaActual) &&
+                            getDate(fechaRuta) == getDate(fechaActual);
+                })
+                .collect(Collectors.toList());
+
+        if (rutas.isEmpty()) {
+            throw new DataNotFoundException("No se encontró una ruta para el repartidor con email: " + emailRepartidor + " en la fecha actual.", "RUTA_NOT_FOUND");
+        }
+
+        return rutas.get(0).getId();
+    }
+
+    public Integer obtenerIdPedidoPorSeguimiento(String numeroSeguimiento) {
+        PedidoEntity pedido = pedidoRepository.findBySeguimiento(numeroSeguimiento)
+                .orElseThrow(() -> new DataNotFoundException("No se encontró un pedido con el número de seguimiento: " + numeroSeguimiento, "INVALID_SERIAL_NUMBER"));
+
+        return pedido.getId();
     }
 
 }

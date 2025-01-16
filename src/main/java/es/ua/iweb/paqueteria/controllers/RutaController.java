@@ -54,8 +54,10 @@ public class RutaController {
     @ApiResponse(responseCode = "200", description = "Devuelve la ruta con el pedido asignado")
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/{idRuta}/asignar")
-    public ResponseEntity<RutaResponse> asignarPedido(@PathVariable Integer idRuta, @RequestParam Integer idPedido) {
+    @PostMapping("/asignar")
+    public ResponseEntity<RutaResponse> asignarPedido(@RequestParam String email, @RequestParam String seguimiento) {
+        Integer idRuta = rutaService.obtenerIdRutaPorEmailYFecha(email);
+        Integer idPedido = rutaService.obtenerIdPedidoPorSeguimiento(seguimiento);
         RutaEntity rutaActualizada = rutaService.asignarPedido(idRuta, idPedido);
         return ResponseEntity.ok(mapToRutaResponse(rutaActualizada));
     }
