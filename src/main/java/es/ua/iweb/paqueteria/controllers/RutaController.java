@@ -8,12 +8,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,21 +51,6 @@ public class RutaController {
         return rutas.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(rutas);
     }
 
-    @Operation(summary = "Obtiene las rutas asignadas al repartidor actual")
-    @ApiResponse(responseCode = "200", description = "Devuelve las rutas del usuario")
-    @SecurityRequirement(name = "Bearer Authentication")
-    @GetMapping("/owned")
-    public ResponseEntity<List<RutaResponse>> getUserRutas() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Integer repartidorId = rutaService.getRepartidorIdByEmail(email);
-
-        List<RutaResponse> rutas = rutaService.getRutasByRepartidor(repartidorId).stream()
-                .map(this::mapToRutaResponse)
-                .collect(Collectors.toList());
-
-        return rutas.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(rutas);
-    }
-
     @Operation(summary = "Asigna un pedido a una ruta")
     @ApiResponse(responseCode = "200", description = "Devuelve la ruta con el pedido asignado")
     @SecurityRequirement(name = "Bearer Authentication")
@@ -71,6 +59,21 @@ public class RutaController {
     public ResponseEntity<RutaResponse> asignarPedido(@PathVariable Integer idRuta, @RequestParam Integer idPedido) {
         RutaEntity rutaActualizada = rutaService.asignarPedido(idRuta, idPedido);
         return ResponseEntity.ok(mapToRutaResponse(rutaActualizada));
+    }
+
+    @Operation(summary = "Obtiene la ruta del día del repartidor")
+    @ApiResponse(responseCode = "200", description = "Devuelve la ruta del día con los seguimientos")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAuthority('REPARTIDOR')")
+    @GetMapping("/diaria")
+    public ResponseEntity<RutaResponse> getRutaDelDia() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Integer repartidor = rutaService.getRepartidorIdByEmail(email);
+
+        Date fecha = java.sql.Date.valueOf(LocalDate.now());
+        RutaEntity ruta = rutaService.getRutaDelDia(repartidor, fecha);
+
+        return ResponseEntity.ok(mapToRutaResponse(ruta));
     }
 
     private RutaResponse mapToRutaResponse(RutaEntity rutaEntity) {

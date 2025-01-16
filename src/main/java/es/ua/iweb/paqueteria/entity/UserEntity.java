@@ -72,6 +72,11 @@ public class UserEntity implements UserDetails {
     @JsonManagedReference
     private List<SessionEntity> sessions;
 
+    @OneToMany(mappedBy = "repartidor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    @Builder.Default
+    private List<RutaEntity> rutas = new ArrayList<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authoritiesList = new ArrayList<>();
