@@ -10,7 +10,6 @@ import es.ua.iweb.paqueteria.type.EstadoType;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -160,5 +159,19 @@ public class PedidoService {
         String identificadorUnico = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
 
         return prefijo + "-" + fechaActual + "-" + identificadorUnico;
+    }
+
+    @Transactional
+    public PedidoResponse actualizarEstadoPedido(String nSeguimiento, EstadoPedidoRequest estado) {
+        Optional<PedidoEntity> optionalPedido = pedidoRepository.findBySeguimiento(nSeguimiento);
+
+        if (optionalPedido.isPresent()) {
+            PedidoEntity pedido = optionalPedido.get();
+            pedido.setEstado(estado.getEstado());
+            pedido.setEstado_ultima_actualizacion(estado.getEstado_ultima_actualizacion());
+            return pedidoRepository.save(pedido).toDTO();
+        } else {
+            throw new IllegalArgumentException("Pedido con ID " + nSeguimiento + " no encontrado.");
+        }
     }
 }

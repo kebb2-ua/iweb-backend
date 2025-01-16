@@ -100,4 +100,12 @@ public class PedidoController {
         Float coste = pedidoService.getTarifa(tarifaRequest);
         return ResponseEntity.ok(TarifaResponse.builder().coste_estimado(coste).build());
     }
+
+    @Operation(summary = "Modifica el estado del pedido")
+    @ApiResponse(responseCode = "200", description = "Devuelve el pedido con el estado modificado")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PostMapping("/{seguimiento}/estado")
+    public ResponseEntity<PedidoResponse> actualizarEstadoPedido(@PathVariable String seguimiento, @RequestBody @Valid EstadoPedidoRequest estado) {
+        return ResponseEntity.ok(pedidoService.actualizarEstadoPedido(seguimiento, estado));
+    }
 }
