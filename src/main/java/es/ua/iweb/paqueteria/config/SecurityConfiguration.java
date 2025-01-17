@@ -37,6 +37,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/api/docs/**").permitAll()
                                 .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register").permitAll()
                                 .requestMatchers("/api/v1/auth/recover/send", "/api/v1/auth/verification/verify").permitAll()
+                                .requestMatchers("/api/v1/pagos/confirm/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
