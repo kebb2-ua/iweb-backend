@@ -3,7 +3,6 @@ package es.ua.iweb.paqueteria.controllers;
 import es.ua.iweb.paqueteria.dto.NewPagoRequest;
 import es.ua.iweb.paqueteria.service.PagosService;
 import es.ua.iweb.paqueteria.service.PedidoService;
-import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +16,6 @@ import java.util.Map;
 @RequestMapping("/api/v1/pagos")
 @RequiredArgsConstructor
 @CrossOrigin
-@Hidden
 public class PagosController {
 
     @Autowired

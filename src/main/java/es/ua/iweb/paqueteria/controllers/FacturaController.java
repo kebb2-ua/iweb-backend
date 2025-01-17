@@ -2,7 +2,6 @@ package es.ua.iweb.paqueteria.controllers;
 
 import es.ua.iweb.paqueteria.entity.FacturaEntity;
 import es.ua.iweb.paqueteria.service.FacturaService;
-import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin
 @PreAuthorize("hasAuthority('ADMIN')")
-@Hidden
 public class FacturaController {
 
     private final FacturaService facturaService;

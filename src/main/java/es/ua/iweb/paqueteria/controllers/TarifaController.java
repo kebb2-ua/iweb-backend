@@ -2,7 +2,6 @@ package es.ua.iweb.paqueteria.controllers;
 
 import es.ua.iweb.paqueteria.entity.TarifaEntity;
 import es.ua.iweb.paqueteria.service.TarifaService;
-import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @CrossOrigin
 @PreAuthorize("hasAuthority('USER')")
-@Hidden
 public class TarifaController {
 
     private final TarifaService tarifaService;

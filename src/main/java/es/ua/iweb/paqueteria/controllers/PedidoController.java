@@ -4,7 +4,6 @@ package es.ua.iweb.paqueteria.controllers;
 import es.ua.iweb.paqueteria.dto.*;
 
 import es.ua.iweb.paqueteria.service.PedidoService;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -79,7 +78,6 @@ public class PedidoController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{nSeguimiento}/asignar")
     @PreAuthorize("hasAuthority('ADMIN')")
-    @Hidden
     public ResponseEntity<PedidoResponse> asignarRepartidor(@PathVariable("nSeguimiento") String nSeguimiento, @RequestParam("emailRepartidor") String emailRepartidor) {
         return ResponseEntity.ok(pedidoService.actualizarRepartidor(nSeguimiento, emailRepartidor));
     }
@@ -106,7 +104,6 @@ public class PedidoController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/{seguimiento}/estado")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'REPARTIDOR')")
-    @Hidden
     public ResponseEntity<PedidoResponse> actualizarEstadoPedido(@PathVariable String seguimiento, @RequestBody @Valid EstadoPedidoRequest estado) {
         return ResponseEntity.ok(pedidoService.actualizarEstadoPedido(seguimiento, estado));
     }
