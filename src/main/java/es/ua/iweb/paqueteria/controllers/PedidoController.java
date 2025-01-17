@@ -32,7 +32,7 @@ public class PedidoController {
     @ApiResponse(responseCode = "200", description = "Devuelve una lista con todos los pedidos")
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'REPARTIDOR')")
     public ResponseEntity<List<PedidoResponse>> getAllPedidos() {
         List<PedidoResponse> pedidos = pedidoService.getAllPedidos();
         if(pedidos.isEmpty()) {
